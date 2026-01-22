@@ -1,0 +1,57 @@
+<div class="panel">
+  <h2>ShowMyWeather</h2>
+
+  <div class="form">
+    <mat-form-field>
+      <mat-label>Latitude</mat-label>
+      <input matInput [(ngModel)]="latitude" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Longitude</mat-label>
+      <input matInput [(ngModel)]="longitude" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Radius</mat-label>
+      <input matInput [(ngModel)]="radius" />
+    </mat-form-field>
+
+    <div class="block">
+      <mat-slider min="1" max="10" step="1" showTickMarks>
+        <input matSliderThumb [(ngModel)]="sliderValue" />
+      </mat-slider>
+      <div class="hint">Stufe: {{ sliderValue }}</div>
+    </div>
+
+    <div class="block">
+      <div class="label">select number of weather stations</div>
+      <mat-form-field>
+        <mat-label>Weather stations</mat-label>
+        <mat-select [(ngModel)]="stationCount">
+          <mat-option *ngFor="let opt of stationOptions" [value]="opt">{{ opt }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <div class="rowLabel">Start</div>
+      <mat-form-field class="rowField">
+        <mat-label>Start</mat-label>
+        <input matInput [(ngModel)]="start" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <div class="rowLabel">End</div>
+      <mat-form-field class="rowField">
+        <mat-label>End</mat-label>
+        <input matInput [(ngModel)]="end" />
+      </mat-form-field>
+    </div>
+
+    <button class="cta" matButton="elevated" type="button" (click)="lookupWeatherStations()">
+      lookup weather stations
+    </button>
+  </div>
+</div>

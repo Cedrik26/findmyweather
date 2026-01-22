@@ -14,10 +14,14 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render map container and sidenav', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
+    fixture.detectChanges();
+
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, untitled');
+    expect(compiled.querySelector('.map')).toBeTruthy();
+    expect(compiled.querySelector('mat-sidenav-container')).toBeTruthy();
+    expect(compiled.querySelector('mat-sidenav')).toBeTruthy();
   });
 });
