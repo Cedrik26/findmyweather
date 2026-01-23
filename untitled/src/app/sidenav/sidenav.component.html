@@ -1,5 +1,5 @@
 <div class="panel">
-  <h2>ShowMyWeather</h2>
+  <h2>ShowMyWeather 1.0.0</h2>
 
   <div class="form">
     <mat-form-field subscriptSizing="dynamic">
@@ -27,7 +27,10 @@
     <div class="block">
       <div class="row" style="grid-template-columns: 1fr auto; align-items: center;">
         <div class="label" style="margin: 0;">Alle Wetterstationen anzeigen</div>
-        <mat-slide-toggle [(ngModel)]="selectAllStations" name="selectAllStations" aria-label="Alle Wetterstationen anzeigen" />
+        <mat-slide-toggle
+          [(ngModel)]="selectAllStations"
+          name="selectAllStations"
+          aria-label="Alle Wetterstationen anzeigen" />
       </div>
 
       <ng-container *ngIf="!selectAllStations">
@@ -38,11 +41,6 @@
       </ng-container>
     </div>
 
-    <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Number of Weather stations</mat-label>
-      <input matInput [(ngModel)]="stations" />
-    </mat-form-field>
-
     <div class="block">
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select Weather station</mat-label>
@@ -52,15 +50,32 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field class="rowField" subscriptSizing="dynamic">
-      <mat-label>Start</mat-label>
-      <input matInput [(ngModel)]="start" />
-    </mat-form-field>
-
-    <mat-form-field class="rowField" subscriptSizing="dynamic">
-      <mat-label>End</mat-label>
-      <input matInput [(ngModel)]="end" />
-    </mat-form-field>
+    <!-- Year-only Date Range Picker -->
+    <div class="block">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>Zeitraum (Jahre)</mat-label>
+        <mat-date-range-input [rangePicker]="yearRangePicker">
+          <input
+            matStartDate
+            [(ngModel)]="startYear"
+            placeholder="Startjahr"
+            (focus)="setActiveYearField('start')"
+            (click)="setActiveYearField('start')" />
+          <input
+            matEndDate
+            [(ngModel)]="endYear"
+            placeholder="Endjahr"
+            (focus)="setActiveYearField('end')"
+            (click)="setActiveYearField('end')" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="yearRangePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker
+          #yearRangePicker
+          startView="multi-year"
+          (yearSelected)="onYearSelected($event, yearRangePicker)">
+        </mat-date-range-picker>
+      </mat-form-field>
+    </div>
 
     <button class="cta" matButton="elevated" type="button" (click)="lookupWeatherStations()">
       lookup weather stations
