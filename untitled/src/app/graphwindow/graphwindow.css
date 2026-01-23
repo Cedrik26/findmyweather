@@ -1,0 +1,27 @@
+.graph-card {
+  /* lasse das Graphwindow innerhalb des Overlay-Containers automatisch mitskalieren: volle verfügbare Breite/Höhe, aber ohne die Sidenav zu überschreiten. */
+  width: 100%;
+  height: 100%;
+
+  resize: none;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.graph-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  font-size: 30px;
+  display: flex;
+  align-items: flex-start; /* oben */
+  justify-content: center; /* horizontal mittig */
+
+  padding-top: 16px;
+}
+
+.graph-card mat-card-actions {
+  flex: 0 0 auto;
+}

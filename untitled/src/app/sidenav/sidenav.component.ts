@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -68,9 +68,16 @@ const YEAR_ONLY_DATE_FORMATS = {
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
 })
-export class SidenavComponent {
-  latitude = '';
-  longitude = '';
+export class SidenavComponent implements OnChanges {
+  @Output() openGraph = new EventEmitter<void>();
+  @Output() coordinatesChange = new EventEmitter<{ latitude: string; longitude: string }>();
+
+  @Input() latitude = '';
+  @Input() longitude = '';
+
+  /** interne Werte für die Inputs (ngModel) */
+  latitudeValue = '';
+  longitudeValue = '';
 
   /** Radius in km (oder beliebige Einheit) – Default soll 5 sein */
   radius = 5;
@@ -91,6 +98,15 @@ export class SidenavComponent {
   /** Start-/Endjahr: wir speichern Dates, zeigen aber nur YYYY */
   startYear: Date | null = null;
   endYear: Date | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['latitude']) {
+      this.latitudeValue = this.latitude ?? '';
+    }
+    if (changes['longitude']) {
+      this.longitudeValue = this.longitude ?? '';
+    }
+  }
 
   setStartYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
     const year = normalizedYear.getFullYear();
@@ -119,6 +135,13 @@ export class SidenavComponent {
     picker.close();
   }
 
+  onCoordinatesInputChange(): void {
+    this.coordinatesChange.emit({
+      latitude: this.latitudeValue,
+      longitude: this.longitudeValue,
+    });
+  }
+
   lookupWeatherStations(): void {
     // eslint-disable-next-line no-console
     console.log('lookup weather stations', {
@@ -133,16 +156,6 @@ export class SidenavComponent {
     });
   }
   lookupGraph(): void {
-    // eslint-disable-next-line no-console
-    console.log('lookup weather stations', {
-      latitude: this.latitude,
-      longitude: this.longitude,
-      radius: this.radius,
-      weatherStationCount: this.weatherStationCount,
-      selectAllStations: this.selectAllStations,
-      stationCount: this.stationCount,
-      startYear: this.startYear?.getFullYear() ?? null,
-      endYear: this.endYear?.getFullYear() ?? null,
-    });
+    this.openGraph.emit();
   }
 }

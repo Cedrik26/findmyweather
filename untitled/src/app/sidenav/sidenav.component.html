@@ -4,12 +4,12 @@
   <div class="form">
     <mat-form-field subscriptSizing="dynamic">
       <mat-label>Latitude</mat-label>
-      <input matInput [(ngModel)]="latitude" />
+      <input matInput [(ngModel)]="latitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
     <mat-form-field subscriptSizing="dynamic">
       <mat-label>Longitude</mat-label>
-      <input matInput [(ngModel)]="longitude" />
+      <input matInput [(ngModel)]="longitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
     <!-- Radius slider -->
@@ -67,7 +67,7 @@
         </mat-form-field>
       </div>
     </div>
-
+<!--
     <div class="block">
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select Weather station</mat-label>
@@ -77,7 +77,7 @@
       </mat-form-field>
     </div>
 
-
+-->
     <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupWeatherStations()">
       lookup weather stations
     </button>

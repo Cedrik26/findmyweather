@@ -1,11 +1,13 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import * as L from 'leaflet';
 import { SidenavComponent } from './sidenav/sidenav.component';
+import { Graphwindow } from './graphwindow/graphwindow';
+import { LatLng, MapService } from './map/map.service';
 
 @Component({
   selector: 'app-root',
-  imports: [MatSidenavModule, SidenavComponent],
+  imports: [CommonModule, MatSidenavModule, SidenavComponent, Graphwindow],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -13,23 +15,91 @@ export class App implements AfterViewInit {
   @ViewChild('map', { static: true })
   private mapEl!: ElementRef<HTMLDivElement>;
 
-  private map?: L.Map;
+  @ViewChild('appSidenav', { read: ElementRef })
+  private sidenavEl?: ElementRef<HTMLElement>;
+
+  private sidenavResizeObserver?: ResizeObserver;
+
+  latitude = '';
+  longitude = '';
+
+  showGraph = false;
+
+  constructor(
+    private readonly mapService: MapService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  openGraph(): void {
+    this.showGraph = true;
+  }
+
+  closeGraph(): void {
+    this.showGraph = false;
+  }
+
+  private updateSidenavWidthCssVar(): void {
+    const el = this.sidenavEl?.nativeElement;
+    if (!el) return;
+
+    const width = Math.round(el.getBoundingClientRect().width);
+    document.documentElement.style.setProperty('--sidenav-width', `${width}px`);
+  }
+
+  private onMapClick(pos: LatLng): void {
+    this.latitude = pos.lat.toFixed(6);
+    this.longitude = pos.lng.toFixed(6);
+    this.mapService.setMarker(pos);
+
+    // sofort rendern (hilft bei zoneless/edge cases)
+    this.cdr.detectChanges();
+  }
+
+  onCoordinatesChange(ev: { latitude: string; longitude: string }): void {
+    const lat = this.parseCoord(ev.latitude);
+    const lng = this.parseCoord(ev.longitude);
+
+    // immer die aktuell getippten Strings anzeigen
+    this.latitude = ev.latitude;
+    this.longitude = ev.longitude;
+
+    if (lat === null || lng === null) return;
+    if (lat < -90 || lat > 90) return;
+    if (lng < -180 || lng > 180) return;
+
+    const pos = { lat, lng };
+    this.mapService.setMarker(pos);
+    this.mapService.panTo(pos);
+  }
+
+  private parseCoord(raw: string): number | null {
+    const trimmed = (raw ?? '').trim();
+    if (!trimmed) return null;
+
+    // Akzeptiere Dezimalkomma
+    const normalized = trimmed.replace(',', '.');
+
+    // Verhindere Sprünge bei unfertigen Eingaben wie '-' oder '12.'
+    if (normalized === '-' || normalized === '.' || normalized === '-.') return null;
+
+    const n = Number(normalized);
+    return Number.isFinite(n) ? n : null;
+  }
 
   ngAfterViewInit(): void {
-    // Guard: prevent double-init in dev/hmr scenarios
-    if (this.map) return;
+    this.mapService.initMap(this.mapEl.nativeElement);
+    this.mapService.onClick((pos) => this.onMapClick(pos));
 
-    this.map = L.map(this.mapEl.nativeElement, {
-      zoomControl: true,
-      attributionControl: true,
-    }).setView([51.1657, 10.4515], 6); // Germany as a sensible default
+    // Sidenav-Breite initial + bei Änderungen aktualisieren
+    this.updateSidenavWidthCssVar();
+    if (this.sidenavEl?.nativeElement) {
+      this.sidenavResizeObserver = new ResizeObserver(() => this.updateSidenavWidthCssVar());
+      this.sidenavResizeObserver.observe(this.sidenavEl.nativeElement);
+    }
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    // Ensure correct sizing once everything is laid out
-    queueMicrotask(() => this.map?.invalidateSize());
+    queueMicrotask(() => {
+      this.mapService.invalidateSize();
+      this.updateSidenavWidthCssVar();
+    });
   }
 }
