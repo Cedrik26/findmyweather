@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Angular Material Standard Theme (prebuilt) */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+/* Leaflet (OpenStreetMap) default styles */
+@import 'leaflet/dist/leaflet.css';
+
+:root {
+  /* Ensures Angular Material typography uses this font everywhere */
+  --mat-sys-body-large-font: Arial, sans-serif;
+  --mat-sys-body-medium-font: Arial, sans-serif;
+  --mat-sys-body-small-font: Arial, sans-serif;
+
+  /* Optional: auch Label/Button Typography anpassen */
+  --mat-sys-label-large-font: Arial, sans-serif;
+  --mat-sys-label-medium-font: Arial, sans-serif;
+  --mat-sys-label-small-font: Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
