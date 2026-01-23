@@ -8,16 +8,21 @@
 
 :root {
   /* Ensures Angular Material typography uses this font everywhere */
-  --mat-sys-body-large-font: "Arial", serif;
-  --mat-sys-body-medium-font: "Arial", serif;
-  --mat-sys-body-small-font: "Arial", serif;
+  --mat-sys-body-large-font: Arial, sans-serif;
+  --mat-sys-body-medium-font: Arial, sans-serif;
+  --mat-sys-body-small-font: Arial, sans-serif;
+
+  /* Optional: auch Label/Button Typography anpassen */
+  --mat-sys-label-large-font: Arial, sans-serif;
+  --mat-sys-label-medium-font: Arial, sans-serif;
+  --mat-sys-label-small-font: Arial, sans-serif;
 }
 
 html,
 body {
   height: 100%;
   margin: 0;
-  font-family: "Arial", serif;
+  font-family: Arial, sans-serif;
 }
 
 body {

@@ -7,7 +7,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatDatepickerModule, MatDateRangePicker } from '@angular/material/datepicker';
+import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
 import {
   DateAdapter,
   MAT_DATE_FORMATS,
@@ -84,41 +84,55 @@ export class SidenavComponent {
   stationCount: string | null = null;
   readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
 
-  /**
-   * Date range: wir speichern bewusst Dates, aber nutzen nur das Jahr.
-   * Wir setzen beim Year-Select jeweils den 1. Januar des gewählten Jahres.
-   */
-  startYear: Date | null = new Date(new Date().getFullYear(), 0, 1);
-  endYear: Date | null = new Date(new Date().getFullYear(), 0, 1);
+  /** Maximal wählbares Jahr (wie im Beispiel) */
+  readonly maxYear = 2020;
+  readonly maxDate = new Date(this.maxYear, 0, 1);
 
-  /** Merkt sich, ob der nächste yearSelected-Klick Start oder End setzt */
-  private activeYearField: 'start' | 'end' = 'start';
+  /** Start-/Endjahr: wir speichern Dates, zeigen aber nur YYYY */
+  startYear: Date | null = null;
+  endYear: Date | null = null;
 
-  setActiveYearField(field: 'start' | 'end'): void {
-    this.activeYearField = field;
+  setStartYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
+    const year = normalizedYear.getFullYear();
+    this.startYear = new Date(year, 0, 1);
+
+    // Endjahr ggf. anpassen
+    if (this.endYear && this.endYear.getFullYear() < year) {
+      this.endYear = new Date(year, 0, 1);
+    }
+
+    picker.close();
   }
 
-  onYearSelected(normalizedYear: Date, picker: MatDateRangePicker<Date>): void {
+  setEndYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
     const year = normalizedYear.getFullYear();
-    const next = new Date(year, 0, 1);
+    const end = new Date(year, 0, 1);
 
-    if (this.activeYearField === 'start') {
-      this.startYear = next;
-      if (this.endYear && this.endYear.getFullYear() < year) {
-        this.endYear = new Date(year, 0, 1);
-      }
+    if (this.startYear && year < this.startYear.getFullYear()) {
+      // komfortabel tauschen
+      this.endYear = this.startYear;
+      this.startYear = end;
     } else {
-      if (this.startYear && year < this.startYear.getFullYear()) {
-        this.endYear = this.startYear;
-        this.startYear = next;
-      } else {
-        this.endYear = next;
-      }
-      picker.close();
+      this.endYear = end;
     }
+
+    picker.close();
   }
 
   lookupWeatherStations(): void {
+    // eslint-disable-next-line no-console
+    console.log('lookup weather stations', {
+      latitude: this.latitude,
+      longitude: this.longitude,
+      radius: this.radius,
+      weatherStationCount: this.weatherStationCount,
+      selectAllStations: this.selectAllStations,
+      stationCount: this.stationCount,
+      startYear: this.startYear?.getFullYear() ?? null,
+      endYear: this.endYear?.getFullYear() ?? null,
+    });
+  }
+  lookupGraph(): void {
     // eslint-disable-next-line no-console
     console.log('lookup weather stations', {
       latitude: this.latitude,

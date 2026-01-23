@@ -41,6 +41,33 @@
       </ng-container>
     </div>
 
+    <!-- Year-only Picker: zwei Felder nebeneinander -->
+    <div class="block">
+      <div class="yearRow">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Startjahr</mat-label>
+          <input matInput [matDatepicker]="startYearPicker" [(ngModel)]="startYear" [max]="maxDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="startYearPicker"></mat-datepicker-toggle>
+          <mat-datepicker
+            #startYearPicker
+            startView="multi-year"
+            (yearSelected)="setStartYear($event, startYearPicker)">
+          </mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>Endjahr</mat-label>
+          <input matInput [matDatepicker]="endYearPicker" [(ngModel)]="endYear" [max]="maxDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="endYearPicker"></mat-datepicker-toggle>
+          <mat-datepicker
+            #endYearPicker
+            startView="multi-year"
+            (yearSelected)="setEndYear($event, endYearPicker)">
+          </mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
     <div class="block">
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select Weather station</mat-label>
@@ -50,35 +77,13 @@
       </mat-form-field>
     </div>
 
-    <!-- Year-only Date Range Picker -->
-    <div class="block">
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
-        <mat-label>Zeitraum (Jahre)</mat-label>
-        <mat-date-range-input [rangePicker]="yearRangePicker">
-          <input
-            matStartDate
-            [(ngModel)]="startYear"
-            placeholder="Startjahr"
-            (focus)="setActiveYearField('start')"
-            (click)="setActiveYearField('start')" />
-          <input
-            matEndDate
-            [(ngModel)]="endYear"
-            placeholder="Endjahr"
-            (focus)="setActiveYearField('end')"
-            (click)="setActiveYearField('end')" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matIconSuffix [for]="yearRangePicker"></mat-datepicker-toggle>
-        <mat-date-range-picker
-          #yearRangePicker
-          startView="multi-year"
-          (yearSelected)="onYearSelected($event, yearRangePicker)">
-        </mat-date-range-picker>
-      </mat-form-field>
-    </div>
 
-    <button class="cta" matButton="elevated" type="button" (click)="lookupWeatherStations()">
+    <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupWeatherStations()">
       lookup weather stations
+    </button>
+
+    <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupGraph()">
+      lookup Graph
     </button>
   </div>
 </div>
