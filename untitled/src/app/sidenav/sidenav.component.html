@@ -2,31 +2,33 @@
   <h2>ShowMyWeather</h2>
 
   <div class="form">
-    <mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
       <mat-label>Latitude</mat-label>
       <input matInput [(ngModel)]="latitude" />
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
       <mat-label>Longitude</mat-label>
       <input matInput [(ngModel)]="longitude" />
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
       <mat-label>Radius</mat-label>
       <input matInput [(ngModel)]="radius" />
     </mat-form-field>
 
     <div class="block">
       <mat-slider min="1" max="10" step="1" showTickMarks>
-        <input matSliderThumb [(ngModel)]="sliderValue" />
+        <input
+          matSliderThumb
+          [ngModel]="sliderValue"
+          (ngModelChange)="onSliderChange($event)" />
       </mat-slider>
-      <div class="hint">Stufe: {{ sliderValue }}</div>
     </div>
 
     <div class="block">
       <div class="label">select number of weather stations</div>
-      <mat-form-field>
+      <mat-form-field subscriptSizing="dynamic">
         <mat-label>Weather stations</mat-label>
         <mat-select [(ngModel)]="stationCount">
           <mat-option *ngFor="let opt of stationOptions" [value]="opt">{{ opt }}</mat-option>
@@ -35,16 +37,14 @@
     </div>
 
     <div class="row">
-      <div class="rowLabel">Start</div>
-      <mat-form-field class="rowField">
+      <mat-form-field class="rowField" subscriptSizing="dynamic">
         <mat-label>Start</mat-label>
         <input matInput [(ngModel)]="start" />
       </mat-form-field>
     </div>
 
     <div class="row">
-      <div class="rowLabel">End</div>
-      <mat-form-field class="rowField">
+      <mat-form-field class="rowField" subscriptSizing="dynamic">
         <mat-label>End</mat-label>
         <input matInput [(ngModel)]="end" />
       </mat-form-field>

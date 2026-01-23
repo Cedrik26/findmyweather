@@ -5,8 +5,7 @@
 
 .panel {
   height: 100%;
-  background: #fff;
-  padding: 16px;
+  padding: 5px;
   box-sizing: border-box;
   overflow: auto;
 
@@ -16,6 +15,8 @@ h2 {
   margin: 0 0 16px;
   font-size: 16px;
   font-weight: 600;
+  text-align: center;
+
 }
 
 .form {
@@ -25,6 +26,16 @@ h2 {
 }
 
 mat-form-field {
+  width: 100%;
+}
+
+/* Slider soll die ganze verfügbare Breite nutzen */
+mat-slider {
+  width: 100%;
+  display: block;
+}
+
+.block {
   width: 100%;
 }
 

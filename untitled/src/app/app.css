@@ -5,6 +5,24 @@
   z-index: 0;
 }
 
+/* Logo overlay (top-left) */
+.logo {
+  position: fixed;
+  top: 16px;
+  left: 50px;
+  z-index: 2; /* über Map + Shell */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.logo img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
 /* Overlay UI on top of the map */
 .shell {
   position: fixed;
@@ -19,7 +37,7 @@
   max-width: 420px;
   padding: 12px;
   box-sizing: border-box;
-}
+        }
 
 /* Make Angular Material containers transparent so the map stays visible */
 :host ::ng-deep .mat-drawer-container {

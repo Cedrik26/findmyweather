@@ -25,15 +25,22 @@ import { MatButtonModule } from '@angular/material/button';
 export class SidenavComponent {
   latitude = '';
   longitude = '';
-  radius = '';
 
-  sliderValue = 1;
+  /** Radius als Text, weil matInput per ngModel auf string arbeitet */
+  radius = '5';
+
+  sliderValue = 5;
 
   stationCount: string | null = null;
   readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
 
   start = '';
   end = '';
+
+  onSliderChange(value: number): void {
+    this.sliderValue = value;
+    this.radius = String(value);
+  }
 
   lookupWeatherStations(): void {
     // Placeholder: hier später API-Call/Navigation/etc.
