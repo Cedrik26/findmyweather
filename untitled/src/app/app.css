@@ -33,7 +33,7 @@
 
 .sidenav {
   width: 12.5vw; /* ~ 1/8 der Breite */
-  min-width: 260px;
+  min-width: 350px;
   max-width: 420px;
   padding: 12px;
   box-sizing: border-box;

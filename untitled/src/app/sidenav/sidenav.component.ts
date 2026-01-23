@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-sidenav',
@@ -18,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatSliderModule,
     MatSelectModule,
     MatButtonModule,
+    MatSlideToggleModule,
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
@@ -26,21 +28,23 @@ export class SidenavComponent {
   latitude = '';
   longitude = '';
 
-  /** Radius als Text, weil matInput per ngModel auf string arbeitet */
-  radius = '5';
+  /** Radius in km (oder beliebige Einheit) – Default soll 5 sein */
+  radius = 5;
 
-  sliderValue = 5;
+  /** Anzahl Wetterstationen (Slider) */
+  weatherStationCount = 5;
+
+  /** Toggle: alle Wetterstationen auswählen */
+  selectAllStations = true;
+
+  /** Freitext-Eingabe (falls du sie behalten willst) */
+  stations = '';
 
   stationCount: string | null = null;
   readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
 
   start = '';
   end = '';
-
-  onSliderChange(value: number): void {
-    this.sliderValue = value;
-    this.radius = String(value);
-  }
 
   lookupWeatherStations(): void {
     // Placeholder: hier später API-Call/Navigation/etc.
@@ -49,7 +53,8 @@ export class SidenavComponent {
       latitude: this.latitude,
       longitude: this.longitude,
       radius: this.radius,
-      sliderValue: this.sliderValue,
+      weatherStationCount: this.weatherStationCount,
+      selectAllStations: this.selectAllStations,
       stationCount: this.stationCount,
       start: this.start,
       end: this.end,
