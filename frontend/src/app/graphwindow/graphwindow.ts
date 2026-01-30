@@ -110,43 +110,28 @@ export class Graphwindow implements OnChanges, OnDestroy {
     const canvas = this.chartCanvas?.nativeElement;
     if (!canvas) return;
 
-    const labels = details.years.map(String);
-
     const cfg: ChartConfiguration<'line'> = {
       type: 'line',
       data: {
-        labels,
-        datasets: [
-          {
-            label: 'Annual Tmin',
-            data: details.data.annual.tmin,
-            borderColor: '#1976d2',
-            backgroundColor: 'rgba(25, 118, 210, 0.15)',
-            tension: 0.25,
-          },
-          {
-            label: 'Annual Tmax',
-            data: details.data.annual.tmax,
-            borderColor: '#d32f2f',
-            backgroundColor: 'rgba(211, 47, 47, 0.15)',
-            tension: 0.25,
-          },
-        ],
+        labels: details.labels,
+        datasets: details.datasets.map((d, idx) => ({
+          label: d.label,
+          data: d.data,
+          borderColor: d.borderColor ?? defaultColor(idx),
+          backgroundColor: d.backgroundColor ?? 'rgba(0,0,0,0.05)',
+          tension: typeof d.tension === 'number' ? d.tension : 0.25,
+        })),
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: { position: 'top' },
-          title: { display: true, text: `Station ${details.id} (Annual)` },
+          title: { display: true, text: `Station ${this.stationId ?? ''}` },
         },
         scales: {
-          y: {
-            title: { display: true, text: '°C' },
-          },
-          x: {
-            title: { display: true, text: 'Year' },
-          },
+          y: { title: { display: true, text: 'Wert' } },
+          x: { title: { display: true, text: 'Datum/Jahr' } },
         },
       },
     };
@@ -173,23 +158,34 @@ function valAt(arr: number[], idx: number): number | null {
 }
 
 function buildTableRows(details: WeatherStationDetails): TableRow[] {
-  const y = details.years ?? [];
+  // Backend liefert Chart.js Daten; die bisherige Tabelle (annual/seasonal) passt dazu nicht 1:1.
+  // Wir zeigen daher eine einfache Tabelle "Label -> Werte je Dataset".
+  const labels = details.labels ?? [];
 
-  return y.map((year, i) => ({
-    year,
-    annual_tmin: valAt(details.data.annual.tmin, i),
-    annual_tmax: valAt(details.data.annual.tmax, i),
+  return labels.map((label, i) => {
+    const get = (datasetLabel: string): number | null => {
+      const ds = details.datasets.find((d) => d.label === datasetLabel);
+      const v = ds?.data?.[i];
+      return typeof v === 'number' && Number.isFinite(v) ? v : null;
+    };
 
-    spring_tmin: valAt(details.data.seasonal.spring.tmin, i),
-    spring_tmax: valAt(details.data.seasonal.spring.tmax, i),
+    return {
+      year: Number(label),
+      annual_tmin: get('TMIN') ?? get('Annual Tmin'),
+      annual_tmax: get('TMAX') ?? get('Annual Tmax'),
+      spring_tmin: null,
+      spring_tmax: null,
+      summer_tmin: null,
+      summer_tmax: null,
+      autumn_tmin: null,
+      autumn_tmax: null,
+      winter_tmin: null,
+      winter_tmax: null,
+    };
+  });
+}
 
-    summer_tmin: valAt(details.data.seasonal.summer.tmin, i),
-    summer_tmax: valAt(details.data.seasonal.summer.tmax, i),
-
-    autumn_tmin: valAt(details.data.seasonal.autumn.tmin, i),
-    autumn_tmax: valAt(details.data.seasonal.autumn.tmax, i),
-
-    winter_tmin: valAt(details.data.seasonal.winter.tmin, i),
-    winter_tmax: valAt(details.data.seasonal.winter.tmax, i),
-  }));
+function defaultColor(idx: number): string {
+  const palette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
+  return palette[idx % palette.length]!;
 }

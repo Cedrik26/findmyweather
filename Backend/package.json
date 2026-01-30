@@ -4,24 +4,28 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "set NODE_PATH=./node_modules && bun --watch src/index.ts",
-    "start": "set NODE_PATH=./node_modules && bun src/index.ts",
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
     "test": "bun test",
+
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
     "docker:build": "docker build -t ghcn-weather-backend .",
     "docker:run": "docker run -p 3000:3000 -v ./data:/app/data ghcn-weather-backend"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/cors": "^2.8.17"
+    "tsx": "^4.21.0"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.0.1",
     "node-cache": "^5.1.2",
-    "cors": "^2.8.5",
     "zod": "^3.24.1"
   }
 }
