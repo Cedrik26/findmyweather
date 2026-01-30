@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, Injectable } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,7 +14,9 @@ import {
   MatNativeDateModule,
   NativeDateAdapter,
 } from '@angular/material/core';
+import { WeatherStationQuery } from '../weather-stations/weather-station.models';
 
+@Injectable()
 class YearOnlyDateAdapter extends NativeDateAdapter {
   override format(date: Date, displayFormat: unknown): string {
     // Für unsere Inputs nur das Jahr anzeigen.
@@ -69,9 +71,9 @@ const YEAR_ONLY_DATE_FORMATS = {
   styleUrl: './sidenav.component.css',
 })
 export class SidenavComponent implements OnChanges {
-  @Output() openGraph = new EventEmitter<void>();
   @Output() coordinatesChange = new EventEmitter<{ latitude: string; longitude: string }>();
   @Output() radiusChange = new EventEmitter<number>();
+  @Output() lookupStations = new EventEmitter<WeatherStationQuery>();
 
   @Input() latitude = '';
   @Input() longitude = '';
@@ -151,19 +153,29 @@ export class SidenavComponent implements OnChanges {
   }
 
   lookupWeatherStations(): void {
-    // eslint-disable-next-line no-console
-    console.log('lookup weather stations', {
-      latitude: this.latitude,
-      longitude: this.longitude,
-      radius: this.radius,
-      weatherStationCount: this.weatherStationCount,
-      selectAllStations: this.selectAllStations,
-      stationCount: this.stationCount,
+    const lat = parseCoordOrNull(this.latitudeValue);
+    const lng = parseCoordOrNull(this.longitudeValue);
+    if (lat == null || lng == null) return;
+
+    this.lookupStations.emit({
+      latitude: lat,
+      longitude: lng,
+      radiusKm: Number(this.radius),
       startYear: this.startYear?.getFullYear() ?? null,
       endYear: this.endYear?.getFullYear() ?? null,
+      selectAllStations: this.selectAllStations,
+      limit: Number(this.weatherStationCount),
     });
   }
-  lookupGraph(): void {
-    this.openGraph.emit();
-  }
+}
+
+function parseCoordOrNull(raw: string): number | null {
+  const trimmed = (raw ?? '').trim();
+  if (!trimmed) return null;
+
+  const normalized = trimmed.replace(',', '.');
+  if (normalized === '-' || normalized === '.' || normalized === '-.') return null;
+
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
 }

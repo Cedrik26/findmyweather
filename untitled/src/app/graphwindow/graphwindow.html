@@ -1,9 +1,57 @@
 <mat-card class="graph-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Station {{ stationId || '-' }}</mat-card-title>
+  </mat-card-header>
+
   <mat-card-content class="graph-content">
-    <mat-label>Weather Station:</mat-label>
+    <div *ngIf="loading" class="state">Loading details…</div>
+    <div *ngIf="!loading && error" class="state error">{{ error }}</div>
+
+    <div *ngIf="!loading && !error && details" class="layout">
+      <!-- Left: table -->
+      <div class="tableWrap">
+        <table class="dataTable">
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Annual Tmin</th>
+              <th>Annual Tmax</th>
+              <th>Spring Tmin</th>
+              <th>Spring Tmax</th>
+              <th>Summer Tmin</th>
+              <th>Summer Tmax</th>
+              <th>Autumn Tmin</th>
+              <th>Autumn Tmax</th>
+              <th>Winter Tmin</th>
+              <th>Winter Tmax</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of tableRows">
+              <td>{{ r.year }}</td>
+              <td>{{ r.annual_tmin }}</td>
+              <td>{{ r.annual_tmax }}</td>
+              <td>{{ r.spring_tmin }}</td>
+              <td>{{ r.spring_tmax }}</td>
+              <td>{{ r.summer_tmin }}</td>
+              <td>{{ r.summer_tmax }}</td>
+              <td>{{ r.autumn_tmin }}</td>
+              <td>{{ r.autumn_tmax }}</td>
+              <td>{{ r.winter_tmin }}</td>
+              <td>{{ r.winter_tmax }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Right: chart -->
+      <div class="chartWrap" aria-label="Annual chart">
+        <canvas #chartCanvas></canvas>
+      </div>
+    </div>
   </mat-card-content>
 
   <mat-card-actions align="end">
-    <button mat-flat-button type="button" (click)="close.emit()">Close</button>
+    <button mat-flat-button color="primary" type="button" (click)="onClose()">Close</button>
   </mat-card-actions>
 </mat-card>

@@ -8,7 +8,7 @@
 
 <!-- Graph overlay (unten rechts, über der Karte) -->
 <div class="graphOverlay" *ngIf="showGraph">
-  <app-graphwindow (close)="closeGraph()" />
+  <app-graphwindow [stationId]="selectedStationId" (close)="closeGraph()" />
 </div>
 
 <!-- UI overlay -->
@@ -26,7 +26,7 @@
       [longitude]="longitude"
       (coordinatesChange)="onCoordinatesChange($event)"
       (radiusChange)="onRadiusChange($event)"
-      (openGraph)="openGraph()" />
+      (lookupStations)="onLookupStations($event)" />
   </mat-sidenav>
 
   <mat-sidenav-content>
