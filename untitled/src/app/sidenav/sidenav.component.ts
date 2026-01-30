@@ -71,6 +71,7 @@ const YEAR_ONLY_DATE_FORMATS = {
 export class SidenavComponent implements OnChanges {
   @Output() openGraph = new EventEmitter<void>();
   @Output() coordinatesChange = new EventEmitter<{ latitude: string; longitude: string }>();
+  @Output() radiusChange = new EventEmitter<number>();
 
   @Input() latitude = '';
   @Input() longitude = '';
@@ -79,7 +80,7 @@ export class SidenavComponent implements OnChanges {
   latitudeValue = '';
   longitudeValue = '';
 
-  /** Radius in km (oder beliebige Einheit) – Default soll 5 sein */
+  /** Radius in km – Default soll 5 sein */
   radius = 5;
 
   /** Anzahl Wetterstationen (Slider) */
@@ -140,6 +141,13 @@ export class SidenavComponent implements OnChanges {
       latitude: this.latitudeValue,
       longitude: this.longitudeValue,
     });
+  }
+
+  onRadiusChange(value: number): void {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return;
+    this.radius = n;
+    this.radiusChange.emit(n);
   }
 
   lookupWeatherStations(): void {

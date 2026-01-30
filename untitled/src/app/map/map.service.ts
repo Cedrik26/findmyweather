@@ -12,6 +12,10 @@ export interface LatLng {
 export class MapService {
   private map?: L.Map;
   private marker?: L.Marker;
+  private radiusCircle?: L.Circle;
+
+  /** Standard: 5km */
+  private radiusMeters = 5000;
 
   private readonly markerIcon = L.icon({
     iconUrl: '/marker.png',
@@ -61,6 +65,38 @@ export class MapService {
     } else {
       this.marker.setLatLng([pos.lat, pos.lng]);
       this.marker.setIcon(this.markerIcon);
+    }
+
+    this.ensureRadiusCircle(pos);
+  }
+
+  /** Radius in Metern setzen (z.B. 5000 für 5km) */
+  setRadiusMeters(meters: number): void {
+    this.radiusMeters = meters;
+    if (this.radiusCircle) this.radiusCircle.setRadius(this.radiusMeters);
+  }
+
+  getRadiusMeters(): number {
+    return this.radiusMeters;
+  }
+
+  private ensureRadiusCircle(pos: LatLng): void {
+    if (!this.map) return;
+
+    if (!this.radiusCircle) {
+      this.radiusCircle = L.circle([pos.lat, pos.lng], {
+        radius: this.radiusMeters,
+        color: 'red',
+        weight: 2,
+        opacity: 1,
+        fill: true,
+        fillColor: 'red',
+        // „transparent innen“: sehr geringe Füll-Opacity
+        fillOpacity: 0.1,
+      }).addTo(this.map);
+    } else {
+      this.radiusCircle.setLatLng([pos.lat, pos.lng]);
+      this.radiusCircle.setRadius(this.radiusMeters);
     }
   }
 

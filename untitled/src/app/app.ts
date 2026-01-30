@@ -86,6 +86,12 @@ export class App implements AfterViewInit {
     return Number.isFinite(n) ? n : null;
   }
 
+  onRadiusChange(radiusKm: number): void {
+    const km = Number(radiusKm);
+    if (!Number.isFinite(km) || km <= 0) return;
+    this.mapService.setRadiusMeters(km * 1000);
+  }
+
   ngAfterViewInit(): void {
     this.mapService.initMap(this.mapEl.nativeElement);
     this.mapService.onClick((pos) => this.onMapClick(pos));

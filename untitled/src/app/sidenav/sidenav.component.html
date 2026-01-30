@@ -16,10 +16,14 @@
     <div class="block">
       <div class="row" style="grid-template-columns: 1fr auto; align-items: center;">
         <div class="label" style="margin: 0;">Radius</div>
-        <div class="hint" style="margin: 0;">{{ radius }}</div>
+        <div class="hint" style="margin: 0;">{{ radius }} km</div>
       </div>
       <mat-slider min="1" max="100" step="1" showTickMarks>
-        <input matSliderThumb [(ngModel)]="radius" name="radius" />
+        <input
+          matSliderThumb
+          [(ngModel)]="radius"
+          name="radius"
+          (ngModelChange)="onRadiusChange($event)" />
       </mat-slider>
     </div>
 
