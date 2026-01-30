@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="feature graph">
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/weatherstation.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,21 +23,21 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Cedrik26"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Cedrik26&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Cedrik26/findmyweather.git",
-    "accountId": "95c2bc66-f236-40d8-ad5d-766070c416b5"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Cedrik26/findmyweather.git&quot;,
+    &quot;accountId&quot;: &quot;95c2bc66-f236-40d8-ad5d-766070c416b5&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="38yflLU7v45kwplcT9N7VD0211T" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -48,6 +46,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "JavaScript Debug.app.html.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Node.js.weather-station-layer.models.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -64,6 +63,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/public" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -82,7 +82,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1769776881396</updated>
-      <workItem from="1769776882585" duration="11904000" />
+      <workItem from="1769776882585" duration="12284000" />
+      <workItem from="1769803064563" duration="1486000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -124,7 +125,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769785474595</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1769801292747</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1769801292747</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,7 +156,8 @@
     <MESSAGE value="gefixt" />
     <MESSAGE value="feature search weather stations" />
     <MESSAGE value="feature graph" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature graph" />
+    <MESSAGE value="fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
