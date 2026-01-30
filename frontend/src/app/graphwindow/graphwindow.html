@@ -1,7 +1,12 @@
 <mat-card class="graph-card" appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Station {{ stationId || '-' }}</mat-card-title>
-  </mat-card-header>
+  <button
+    class="closeBtn"
+    type="button"
+    aria-label="Close"
+    title="Close"
+    (click)="onClose()">
+    &times;
+  </button>
 
   <mat-card-content class="graph-content">
     <div *ngIf="loading" class="state">Loading details…</div>
@@ -47,8 +52,4 @@
       </div>
     </div>
   </mat-card-content>
-
-  <mat-card-actions align="end">
-    <button mat-flat-button color="primary" type="button" (click)="onClose()">Close</button>
-  </mat-card-actions>
 </mat-card>

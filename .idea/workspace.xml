@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="feature search weather stations">
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="feature graph">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/middleware/validation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/middleware/validation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/src/services/ghcnFetcher.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/src/services/ghcnFetcher.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station.models.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station.models.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +82,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1769776881396</updated>
-      <workItem from="1769776882585" duration="7852000" />
+      <workItem from="1769776882585" duration="11904000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -122,18 +116,38 @@
       <option name="project" value="LOCAL" />
       <updated>1769780000745</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="feature graph">
+      <option name="closed" value="true" />
+      <created>1769785474595</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1769785474595</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="j" />
     <MESSAGE value="fixen" />
     <MESSAGE value="gefixt" />
     <MESSAGE value="feature search weather stations" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature search weather stations" />
+    <MESSAGE value="feature graph" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature graph" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

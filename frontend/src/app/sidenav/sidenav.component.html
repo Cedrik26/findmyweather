@@ -82,7 +82,13 @@
     </div>
 
 -->
-    <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupWeatherStations()">
+    <button
+      class="cta"
+      mat-flat-button
+      color="primary"
+      type="button"
+      (click)="lookupWeatherStations()"
+      [disabled]="!startYear || !endYear">
       lookup weather stations
     </button>
   </div>
