@@ -4,22 +4,26 @@
   <div class="form">
     <mat-form-field subscriptSizing="dynamic">
       <mat-label>Latitude</mat-label>
-      <input matInput [(ngModel)]="latitude" />
+      <input matInput [(ngModel)]="latitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
     <mat-form-field subscriptSizing="dynamic">
       <mat-label>Longitude</mat-label>
-      <input matInput [(ngModel)]="longitude" />
+      <input matInput [(ngModel)]="longitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
     <!-- Radius slider -->
     <div class="block">
       <div class="row" style="grid-template-columns: 1fr auto; align-items: center;">
         <div class="label" style="margin: 0;">Radius</div>
-        <div class="hint" style="margin: 0;">{{ radius }}</div>
+        <div class="hint" style="margin: 0;">{{ radius }} km</div>
       </div>
       <mat-slider min="1" max="100" step="1" showTickMarks>
-        <input matSliderThumb [(ngModel)]="radius" name="radius" />
+        <input
+          matSliderThumb
+          [(ngModel)]="radius"
+          name="radius"
+          (ngModelChange)="onRadiusChange($event)" />
       </mat-slider>
     </div>
 
@@ -67,7 +71,7 @@
         </mat-form-field>
       </div>
     </div>
-
+<!--
     <div class="block">
       <mat-form-field subscriptSizing="dynamic">
         <mat-label>Select Weather station</mat-label>
@@ -77,13 +81,9 @@
       </mat-form-field>
     </div>
 
-
+-->
     <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupWeatherStations()">
       lookup weather stations
-    </button>
-
-    <button class="cta" mat-flat-button color="primary" type="button" (click)="lookupGraph()">
-      lookup Graph
     </button>
   </div>
 </div>

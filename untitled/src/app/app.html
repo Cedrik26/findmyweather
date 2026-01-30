@@ -6,16 +6,27 @@
   <img src="/logo.png" alt="FindMyWeather Logo" />
 </a>
 
+<!-- Graph overlay (unten rechts, über der Karte) -->
+<div class="graphOverlay" *ngIf="showGraph">
+  <app-graphwindow [stationId]="selectedStationId" (close)="closeGraph()" />
+</div>
+
 <!-- UI overlay -->
 <mat-sidenav-container class="shell">
   <mat-sidenav
+    #appSidenav
     class="sidenav"
     mode="side"
     position="end"
     [opened]="true"
     [fixedInViewport]="true"
     aria-label="Seitenleiste">
-    <app-sidenav />
+    <app-sidenav
+      [latitude]="latitude"
+      [longitude]="longitude"
+      (coordinatesChange)="onCoordinatesChange($event)"
+      (radiusChange)="onRadiusChange($event)"
+      (lookupStations)="onLookupStations($event)" />
   </mat-sidenav>
 
   <mat-sidenav-content>

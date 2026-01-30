@@ -28,3 +28,50 @@ body {
 body {
   overflow: hidden;
 }
+
+/* Leaflet Popup: "Lookup Graph" Button im Material-Look */
+.leaflet-popup-content .mat-like-flat-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 9999px;
+  padding: 10px 16px;
+
+  cursor: pointer;
+  user-select: none;
+
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+
+  /* Angular Material (M3) nutzt CSS vars; Fallbacks sind ok */
+  background: var(--mat-sys-primary, #1976d2);
+  color: var(--mat-sys-on-primary, #fff);
+}
+
+.leaflet-popup-content .mat-like-flat-button:hover {
+  filter: brightness(0.95);
+}
+
+.leaflet-popup-content .mat-like-flat-button:active {
+  filter: brightness(0.9);
+}
+
+.leaflet-popup-content .mat-like-flat-button:focus-visible {
+  outline: 2px solid var(--mat-sys-primary, #1976d2);
+  outline-offset: 2px;
+}
+
+/* Leaflet muss klickbar bleiben (Popups/Controls), auch wenn andere Overlays pointer-events manipulieren */
+.leaflet-container,
+.leaflet-pane,
+.leaflet-control,
+.leaflet-popup-pane,
+.leaflet-popup {
+  pointer-events: auto;
+}
