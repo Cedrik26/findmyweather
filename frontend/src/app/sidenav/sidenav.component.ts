@@ -1,0 +1,181 @@
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, Injectable } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDatepickerModule, MatDatepicker } from '@angular/material/datepicker';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MatNativeDateModule,
+  NativeDateAdapter,
+} from '@angular/material/core';
+import { WeatherStationQuery } from '../weather-stations/weather-station.models';
+
+@Injectable()
+class YearOnlyDateAdapter extends NativeDateAdapter {
+  override format(date: Date, displayFormat: unknown): string {
+    // Für unsere Inputs nur das Jahr anzeigen.
+    if (!date) return '';
+    return String(date.getFullYear());
+  }
+
+  override parse(value: unknown): Date | null {
+    if (typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+
+    const year = Number(trimmed);
+    if (!Number.isFinite(year) || year < 1 || year > 9999) return null;
+
+    return new Date(year, 0, 1);
+  }
+}
+
+const YEAR_ONLY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'YYYY',
+  },
+  display: {
+    dateInput: 'YYYY',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'YYYY',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
+
+@Component({
+  selector: 'app-sidenav',
+  standalone: true,
+  providers: [
+    { provide: DateAdapter, useClass: YearOnlyDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: YEAR_ONLY_DATE_FORMATS },
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSliderModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatSlideToggleModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
+  templateUrl: './sidenav.component.html',
+  styleUrl: './sidenav.component.css',
+})
+export class SidenavComponent implements OnChanges {
+  @Output() coordinatesChange = new EventEmitter<{ latitude: string; longitude: string }>();
+  @Output() radiusChange = new EventEmitter<number>();
+  @Output() lookupStations = new EventEmitter<WeatherStationQuery>();
+
+  @Input() latitude = '';
+  @Input() longitude = '';
+
+  /** interne Werte für die Inputs (ngModel) */
+  latitudeValue = '';
+  longitudeValue = '';
+
+  /** Radius in km – Default soll 5 sein */
+  radius = 5;
+
+  /** Anzahl Wetterstationen (Slider) */
+  weatherStationCount = 5;
+
+  /** Toggle: alle Wetterstationen auswählen */
+  selectAllStations = true;
+
+  stationCount: string | null = null;
+  readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
+
+  /** Maximal wählbares Jahr (wie im Beispiel) */
+  readonly maxYear = 2020;
+  readonly maxDate = new Date(this.maxYear, 0, 1);
+
+  /** Start-/Endjahr: wir speichern Dates, zeigen aber nur YYYY */
+  startYear: Date | null = null;
+  endYear: Date | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['latitude']) {
+      this.latitudeValue = this.latitude ?? '';
+    }
+    if (changes['longitude']) {
+      this.longitudeValue = this.longitude ?? '';
+    }
+  }
+
+  setStartYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
+    const year = normalizedYear.getFullYear();
+    this.startYear = new Date(year, 0, 1);
+
+    // Endjahr ggf. anpassen
+    if (this.endYear && this.endYear.getFullYear() < year) {
+      this.endYear = new Date(year, 0, 1);
+    }
+
+    picker.close();
+  }
+
+  setEndYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
+    const year = normalizedYear.getFullYear();
+    const end = new Date(year, 0, 1);
+
+    if (this.startYear && year < this.startYear.getFullYear()) {
+      // komfortabel tauschen
+      this.endYear = this.startYear;
+      this.startYear = end;
+    } else {
+      this.endYear = end;
+    }
+
+    picker.close();
+  }
+
+  onCoordinatesInputChange(): void {
+    this.coordinatesChange.emit({
+      latitude: this.latitudeValue,
+      longitude: this.longitudeValue,
+    });
+  }
+
+  onRadiusChange(value: number): void {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return;
+    this.radius = n;
+    this.radiusChange.emit(n);
+  }
+
+  lookupWeatherStations(): void {
+    const lat = parseCoordOrNull(this.latitudeValue);
+    const lng = parseCoordOrNull(this.longitudeValue);
+    if (lat == null || lng == null) return;
+
+    this.lookupStations.emit({
+      latitude: lat,
+      longitude: lng,
+      radiusKm: Number(this.radius),
+      startYear: this.startYear?.getFullYear() ?? null,
+      endYear: this.endYear?.getFullYear() ?? null,
+      selectAllStations: this.selectAllStations,
+      limit: Number(this.weatherStationCount),
+    });
+  }
+}
+
+function parseCoordOrNull(raw: string): number | null {
+  const trimmed = (raw ?? '').trim();
+  if (!trimmed) return null;
+
+  const normalized = trimmed.replace(',', '.');
+  if (normalized === '-' || normalized === '.' || normalized === '-.') return null;
+
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
+}
