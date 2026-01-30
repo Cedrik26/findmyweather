@@ -1,0 +1,213 @@
+/**
+ * Station Routes
+ * API endpoints for searching stations and retrieving weather data
+ */
+
+import { Router, type Request, type Response } from 'express';
+import {
+    validateStationSearch,
+    validateStationData,
+    type ValidatedStationSearch,
+    type ValidatedStationData
+} from '../middleware/validation';
+import { getAllStations, getStationById, getWeatherData } from '../models/database';
+import { filterStationsByDistance } from '../services/distanceCalculator';
+import { fetchAndStoreStationData, ensureStationsLoaded } from '../services/ghcnFetcher';
+import { combineMetricsForChartJS } from '../services/weatherProcessor';
+import {
+    searchCache,
+    weatherCache,
+    getSearchCacheKey,
+    getWeatherCacheKey
+} from '../utils/cache';
+import type { StationMetadata, ChartJSDataset, MetricType } from '../models/types';
+
+const router = Router();
+
+// ==========================================
+// GET /stations - Search for nearby stations
+// ==========================================
+
+router.get(
+    '/stations',
+    validateStationSearch,
+    async (req: Request, res: Response): Promise<void> => {
+        try {
+            const params = (req as Request & { validated: ValidatedStationSearch }).validated;
+            const { lat, lon, radiusKm, maxStations, startYear, endYear } = params;
+
+            // Check cache
+            const cacheKey = getSearchCacheKey(lat, lon, radiusKm, maxStations, startYear, endYear);
+            const cached = searchCache.get<StationMetadata[]>(cacheKey);
+            if (cached) {
+                res.json(cached);
+                return;
+            }
+
+            // Ensure stations are loaded
+            await ensureStationsLoaded();
+
+            // Get all stations from database
+            let stations = getAllStations();
+
+            // Filter by year range if specified
+            if (startYear || endYear) {
+                stations = stations.filter(s => {
+                    if (startYear && s.lastYear < startYear) return false;
+                    if (endYear && s.firstYear > endYear) return false;
+                    return true;
+                });
+            }
+
+            // Calculate distances and filter
+            const nearbyStations = filterStationsByDistance(
+                stations,
+                lat,
+                lon,
+                radiusKm,
+                maxStations
+            );
+
+            // Map to response format
+            const result: StationMetadata[] = nearbyStations.map(s => ({
+                id: s.id,
+                name: s.name,
+                distanceKm: s.distanceKm,
+                elevation: s.elevation,
+                lat: s.lat,
+                lon: s.lon,
+                firstYear: s.firstYear,
+                lastYear: s.lastYear
+            }));
+
+            // Cache result
+            searchCache.set(cacheKey, result);
+
+            res.json(result);
+        } catch (error) {
+            console.error('Error in GET /stations:', error);
+            res.status(500).json({
+                error: 'Internal Server Error',
+                message: error instanceof Error ? error.message : 'Unknown error'
+            });
+        }
+    }
+);
+
+// ==========================================
+// GET /stations/:id - Get station details
+// ==========================================
+
+router.get(
+    '/stations/:id',
+    async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                res.status(400).json({
+                    error: 'Bad Request',
+                    message: 'Station ID is required'
+                });
+                return;
+            }
+
+            const station = getStationById(id);
+
+            if (!station) {
+                res.status(404).json({
+                    error: 'Not Found',
+                    message: `Station with ID '${id}' not found`
+                });
+                return;
+            }
+
+            res.json(station);
+        } catch (error) {
+            console.error('Error in GET /stations/:id:', error);
+            res.status(500).json({
+                error: 'Internal Server Error',
+                message: error instanceof Error ? error.message : 'Unknown error'
+            });
+        }
+    }
+);
+
+// ==========================================
+// GET /stations/:id/data - Get weather data
+// ==========================================
+
+router.get(
+    '/stations/:id/data',
+    validateStationData,
+    async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { id } = req.params;
+            const params = (req as Request & { validated: ValidatedStationData }).validated;
+            const { startYear, endYear, metrics } = params;
+
+            if (!id) {
+                res.status(400).json({
+                    error: 'Bad Request',
+                    message: 'Station ID is required'
+                });
+                return;
+            }
+
+            // Verify station exists
+            const station = getStationById(id);
+            if (!station) {
+                res.status(404).json({
+                    error: 'Not Found',
+                    message: `Station with ID '${id}' not found`
+                });
+                return;
+            }
+
+            // Check cache
+            const cacheKey = getWeatherCacheKey(id, startYear, endYear, metrics);
+            const cached = weatherCache.get<ChartJSDataset>(cacheKey);
+            if (cached) {
+                res.json(cached);
+                return;
+            }
+
+            // Fetch data from GHCN if not in database
+            await fetchAndStoreStationData(id);
+
+            // Get data from database
+            const observations = getWeatherData(id, metrics, startYear, endYear);
+
+            if (observations.length === 0) {
+                res.json({
+                    labels: [],
+                    datasets: [],
+                    message: 'No data available for the specified time range'
+                });
+                return;
+            }
+
+            // Process data into Chart.js format
+            const chartData = combineMetricsForChartJS(
+                observations,
+                startYear,
+                endYear,
+                metrics as MetricType[],
+                true  // Include seasonal data
+            );
+
+            // Cache result
+            weatherCache.set(cacheKey, chartData);
+
+            res.json(chartData);
+        } catch (error) {
+            console.error('Error in GET /stations/:id/data:', error);
+            res.status(500).json({
+                error: 'Internal Server Error',
+                message: error instanceof Error ? error.message : 'Unknown error'
+            });
+        }
+    }
+);
+
+export default router;
