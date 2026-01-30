@@ -8,44 +8,41 @@
     <div *ngIf="!loading && error" class="state error">{{ error }}</div>
 
     <div *ngIf="!loading && !error && details" class="layout">
-      <!-- Left: table -->
-      <div class="tableWrap">
-        <table class="dataTable">
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Annual Tmin</th>
-              <th>Annual Tmax</th>
-              <th>Spring Tmin</th>
-              <th>Spring Tmax</th>
-              <th>Summer Tmin</th>
-              <th>Summer Tmax</th>
-              <th>Autumn Tmin</th>
-              <th>Autumn Tmax</th>
-              <th>Winter Tmin</th>
-              <th>Winter Tmax</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of tableRows">
-              <td>{{ r.year }}</td>
-              <td>{{ r.annual_tmin }}</td>
-              <td>{{ r.annual_tmax }}</td>
-              <td>{{ r.spring_tmin }}</td>
-              <td>{{ r.spring_tmax }}</td>
-              <td>{{ r.summer_tmin }}</td>
-              <td>{{ r.summer_tmax }}</td>
-              <td>{{ r.autumn_tmin }}</td>
-              <td>{{ r.autumn_tmax }}</td>
-              <td>{{ r.winter_tmin }}</td>
-              <td>{{ r.winter_tmax }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Left: station info + data table -->
+      <div class="leftCol">
+        <div class="stationInfo" *ngIf="details.station">
+          <div class="stationInfoTitle">Wetterstation</div>
+          <table class="infoTable">
+            <tbody>
+              <tr><th>ID</th><td>{{ details.station.id }}</td></tr>
+              <tr><th>Name</th><td>{{ details.station.name }}</td></tr>
+              <tr><th>Koordinaten</th><td>{{ details.station.lat }}, {{ details.station.lon }}</td></tr>
+              <tr><th>Höhe</th><td>{{ details.station.elevation ?? '-' }} m</td></tr>
+              <tr><th>Zeitraum</th><td>{{ details.station.firstYear }}–{{ details.station.lastYear }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tableWrap">
+          <table class="dataTable">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th *ngFor="let ds of details.datasets">{{ ds.label }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of tableRows">
+                <td>{{ row.label }}</td>
+                <td *ngFor="let v of row.values">{{ v }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Right: chart -->
-      <div class="chartWrap" aria-label="Annual chart">
+      <div class="chartWrap" aria-label="Chart">
         <canvas #chartCanvas></canvas>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { WeatherStation, WeatherStationDetails, WeatherStationQuery } from './weather-station.models';
+import { Observable, forkJoin, map } from 'rxjs';
+import { WeatherStation, WeatherStationDetails, WeatherStationInfo, WeatherStationQuery } from './weather-station.models';
 
 @Injectable({ providedIn: 'root' })
 export class WeatherStationRepositoryService {
@@ -27,9 +27,15 @@ export class WeatherStationRepositoryService {
     return this.http.get<WeatherStation[]>('/api/stations', { params });
   }
 
+  private getStationInfo(stationId: string): Observable<WeatherStationInfo> {
+    return this.http.get<WeatherStationInfo>(`/api/stations/${encodeURIComponent(stationId)}`);
+  }
+
   /**
-   * Lädt Chart/Detaildaten.
-   * Backend: GET /api/stations/:id/data?startYear=..&endYear=..&metrics=TMIN,TMAX
+   * Lädt Chart/Detaildaten + Station-Metadaten.
+   * Backend:
+   *  - GET /api/stations/:id
+   *  - GET /api/stations/:id/data?...
    */
   getStationDetails(
     stationId: string,
@@ -43,8 +49,17 @@ export class WeatherStationRepositoryService {
     const metrics = (opts?.metrics?.length ? opts.metrics : ['TMIN', 'TMAX']).join(',');
     params = params.set('metrics', metrics);
 
-    return this.http.get<WeatherStationDetails>(`/api/stations/${encodeURIComponent(stationId)}/data`, {
-      params,
-    });
+    const info$ = this.getStationInfo(stationId);
+    const chart$ = this.http.get<WeatherStationDetails>(
+      `/api/stations/${encodeURIComponent(stationId)}/data`,
+      { params }
+    );
+
+    return forkJoin({ station: info$, chart: chart$ }).pipe(
+      map(({ station, chart }) => ({
+        ...chart,
+        station,
+      }))
+    );
   }
 }

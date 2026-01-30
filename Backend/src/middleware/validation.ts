@@ -55,12 +55,16 @@ export const stationDataSchema = z.object({
         .number()
         .int()
         .min(config.validation.minYear, `Start year must be >= ${config.validation.minYear}`)
-        .max(config.validation.maxYear, `Start year must be <= ${config.validation.maxYear}`),
+        .max(config.validation.maxYear, `Start year must be <= ${config.validation.maxYear}`)
+        .optional()
+        .default(1900),
     endYear: z.coerce
         .number()
         .int()
         .min(config.validation.minYear, `End year must be >= ${config.validation.minYear}`)
-        .max(config.validation.maxYear, `End year must be <= ${config.validation.maxYear}`),
+        .max(config.validation.maxYear, `End year must be <= ${config.validation.maxYear}`)
+        .optional()
+        .default(config.validation.maxYear),
     metrics: z.union([
         z.string().transform(s => s.split(',')),
         z.array(z.string())

@@ -8,7 +8,11 @@
 
 <!-- Graph overlay (unten rechts, über der Karte) -->
 <div class="graphOverlay" *ngIf="showGraph">
-  <app-graphwindow [stationId]="selectedStationId" (close)="closeGraph()" />
+  <app-graphwindow
+    [stationId]="selectedStationId"
+    [startYear]="selectedStartYear"
+    [endYear]="selectedEndYear"
+    (close)="closeGraph()" />
 </div>
 
 <!-- UI overlay -->

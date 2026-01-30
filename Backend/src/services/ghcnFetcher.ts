@@ -160,39 +160,93 @@ export async function fetchAndStoreStations(): Promise<number> {
 // ==========================================
 
 /**
- * Parses a line from GHCN daily CSV format
- * CSV columns: STATION,DATE,DATATYPE,VALUE,MFLAG,QFLAG,SFLAG,OBS_TIME
+ * Parses a line from GHCN daily access CSV format.
+ * Format (see NOAA access/*.csv):
+ *   "STATION","DATE","LATITUDE","LONGITUDE","ELEVATION","NAME",
+ *   ... many element columns ...
+ *   Each element value is like "   28" (tenths) and followed by "flag" column like ",,E".
  */
-function parseWeatherCsvLine(line: string, stationId: string): DailyObservation | null {
-    const parts = line.split(',');
-    if (parts.length < 4) return null;
+function parseWeatherAccessCsv(
+    headerParts: string[],
+    parts: string[],
+    stationId: string
+): DailyObservation[] {
+    const out: DailyObservation[] = [];
 
-    try {
-        const element = parts[2]?.trim() as MetricType;
-        if (element !== 'TMIN' && element !== 'TMAX') return null;
+    const station = unquote(parts[0] ?? '').trim();
+    if (!station || station !== stationId) return out;
 
-        const rawValue = parseInt(parts[3]?.trim() || '', 10);
-        if (isNaN(rawValue)) return null;
+    const dateRaw = unquote(parts[1] ?? '').trim();
+    if (!dateRaw) return out;
 
-        // GHCN stores temps in tenths of degrees Celsius
-        const value = rawValue / 10;
+    const date = dateRaw.includes('-')
+        ? dateRaw
+        : `${dateRaw.substring(0, 4)}-${dateRaw.substring(4, 6)}-${dateRaw.substring(6, 8)}`;
 
-        const dateRaw = parts[1]?.trim() || '';
-        // Format date from YYYYMMDD to YYYY-MM-DD
-        const date = `${dateRaw.substring(0, 4)}-${dateRaw.substring(4, 6)}-${dateRaw.substring(6, 8)}`;
+    // Map header -> value
+    for (let i = 0; i < headerParts.length && i < parts.length; i++) {
+        const key = unquote(headerParts[i] ?? '').trim().toUpperCase();
+        if (key !== 'TMIN' && key !== 'TMAX') continue;
 
-        const qualityFlag = parts[5]?.trim() || '';
+        const raw = unquote(parts[i] ?? '').trim();
+        if (!raw) continue;
 
-        return {
+        // value is tenths of °C
+        const rawValue = parseInt(raw, 10);
+        if (Number.isNaN(rawValue)) continue;
+
+        out.push({
             stationId,
             date,
-            element,
-            value,
-            qualityFlag
-        };
-    } catch {
-        return null;
+            element: key as MetricType,
+            value: rawValue / 10,
+            qualityFlag: '' // quality flags are in separate columns; we ignore them for now
+        });
     }
+
+    return out;
+}
+
+function unquote(v: string): string {
+    const s = v ?? '';
+    if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) return s.slice(1, -1);
+    return s;
+}
+
+/**
+ * Minimaler CSV-Parser (RFC4180-ish) für NOAA GHCN access CSV.
+ * Wichtig: Linien enthalten quoted Felder (z.B. "KOSCHING, GM").
+ */
+function parseCsvLine(line: string): string[] {
+    const out: string[] = [];
+    let cur = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i]!;
+
+        if (ch === '"') {
+            // Escaped quote innerhalb von Quotes ("")
+            if (inQuotes && line[i + 1] === '"') {
+                cur += '"';
+                i++;
+            } else {
+                inQuotes = !inQuotes;
+            }
+            continue;
+        }
+
+        if (ch === ',' && !inQuotes) {
+            out.push(cur);
+            cur = '';
+            continue;
+        }
+
+        cur += ch;
+    }
+
+    out.push(cur);
+    return out;
 }
 
 /**
@@ -219,15 +273,21 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
     }
 
     const csvText = await response.text();
-    const lines = csvText.split('\n');
+    const lines = csvText.split('\n').filter(l => l.trim().length > 0);
+    if (lines.length < 2) {
+        console.warn(`⚠️ Empty CSV for station ${stationId}`);
+        return 0;
+    }
 
-    // Skip header line
+    const headerParts = parseCsvLine(lines[0]! ).map(s => s.trim());
+
+    // Parse rows
     const observations: DailyObservation[] = [];
     for (let i = 1; i < lines.length; i++) {
-        const obs = parseWeatherCsvLine(lines[i]!, stationId);
-        if (obs) {
-            observations.push(obs);
-        }
+        const line = lines[i]!;
+        const parts = parseCsvLine(line);
+        const obs = parseWeatherAccessCsv(headerParts, parts, stationId);
+        if (obs.length) observations.push(...obs);
     }
 
     console.log(`📊 Parsed ${observations.length} observations for ${stationId}`);
