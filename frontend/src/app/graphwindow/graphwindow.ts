@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
 import { Subscription } from 'rxjs';
 
@@ -27,10 +28,27 @@ type TableRow = {
   values: Array<string | number | null>;
 };
 
+type MetricKey = 'TMIN' | 'TMAX' | 'OTHER';
+
+type DatasetToggle = {
+  /** Index im Chart.js datasets-Array */
+  datasetIndex: number;
+  /** Label wie in Chart.js */
+  label: string;
+  /** Label für UI (bereinigt, ohne TMIN/TMAX Prefix) */
+  displayLabel: string;
+  /** Links/Rechts Gruppierung */
+  metric: MetricKey;
+  /** Aktueller Sichtbarkeitszustand */
+  visible: boolean;
+  /** Farbe (falls verfügbar) für kleine Farbbox */
+  color?: string;
+};
+
 @Component({
   selector: 'app-graphwindow',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule, MatCheckboxModule],
   templateUrl: './graphwindow.html',
   styleUrl: './graphwindow.css',
 })
@@ -48,6 +66,17 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
 
   details: WeatherStationDetails | null = null;
   tableRows: TableRow[] = [];
+
+  /** UI-Toggles für Datasets (z.B. TMIN/TMAX + Seasons) */
+  datasetToggles: DatasetToggle[] = [];
+
+  get tminToggles(): DatasetToggle[] {
+    return this.datasetToggles.filter((t) => t.metric === 'TMIN');
+  }
+
+  get tmaxToggles(): DatasetToggle[] {
+    return this.datasetToggles.filter((t) => t.metric === 'TMAX');
+  }
 
   private sub?: Subscription;
   private chart?: Chart;
@@ -97,6 +126,7 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     this.error = null;
     this.details = null;
     this.tableRows = [];
+    this.datasetToggles = [];
 
     // TODO: optional start/end year + metrics aus UI übergeben
     const startYear = this.startYear ?? undefined;
@@ -200,17 +230,22 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
           pointHoverRadius: 4,
           pointHitRadius: 8,
           borderWidth: 2,
+          hidden: !isDefaultVisible(d.label),
         })),
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         animation: false,
-        // Chart.js default parsing ist aktiv; Typing erlaubt hier kein `true`.
-        // parsing: true,
         normalized: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         plugins: {
-          legend: { position: 'top' },
+          legend: {
+            display: false,
+          },
           title: {
             display: true,
             text: details.station?.name
@@ -231,6 +266,10 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
 
     try {
       this.chart = new Chart(canvas, cfg);
+
+      // Dataset-Toggles nach dem Rendern aufbauen (wir brauchen dataset indices)
+      this.datasetToggles = buildDatasetToggles(details);
+
       this.cdr.detectChanges();
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -238,6 +277,17 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
       this.error = 'Chart konnte nicht gerendert werden.';
       this.cdr.detectChanges();
     }
+  }
+
+  onToggleDataset(t: DatasetToggle, checked: boolean): void {
+    t.visible = checked;
+
+    const chart = this.chart;
+    if (!chart) return;
+
+    // Chart.js: dataset visibility setzen und updaten
+    chart.setDatasetVisibility(t.datasetIndex, checked);
+    chart.update();
   }
 
   private destroyChart(): void {
@@ -288,4 +338,45 @@ function toFillColor(hex: string): string {
   // sehr simple: feste leichte Transparenz (funktioniert auch wenn schon rgba übergeben wird)
   if (hex.startsWith('rgba')) return hex;
   return 'rgba(0, 0, 0, 0.05)';
+}
+
+function detectMetricFromLabel(label: string): MetricKey {
+  const upper = (label ?? '').toUpperCase();
+  if (upper.includes('TMIN')) return 'TMIN';
+  if (upper.includes('TMAX')) return 'TMAX';
+  return 'OTHER';
+}
+
+function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
+  const datasets = details.datasets ?? [];
+
+  // Reihenfolge beibehalten (steht schon in Details)
+  return datasets.map((ds, idx) => {
+    const color = ds.borderColor ?? undefined;
+    const metric = detectMetricFromLabel(ds.label);
+    const displayLabel = stripMetricPrefix(ds.label, metric);
+
+    return {
+      datasetIndex: idx,
+      label: ds.label,
+      displayLabel,
+      metric,
+      visible: isDefaultVisible(ds.label),
+      color,
+    } satisfies DatasetToggle;
+  });
+}
+
+function isDefaultVisible(label: string): boolean {
+  // Nur 'xxx Jahresdurchschnitt' soll initial sichtbar sein.
+  return !!label && label.includes('Jahresdurchschnitt');
+}
+
+function stripMetricPrefix(label: string, metric: MetricKey): string {
+  const raw = (label ?? '').trim();
+  if (!raw) return raw;
+
+  if (metric === 'TMIN') return raw.replace(/^TMIN\s*/i, '').trim();
+  if (metric === 'TMAX') return raw.replace(/^TMAX\s*/i, '').trim();
+  return raw;
 }

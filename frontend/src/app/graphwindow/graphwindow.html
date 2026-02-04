@@ -50,7 +50,37 @@
 
       <!-- Right: chart -->
       <div class="chartWrap" aria-label="Chart">
-        <canvas #chartCanvas></canvas>
+        <div class="chartLegend" *ngIf="tminToggles.length || tmaxToggles.length">
+          <div class="legendCol">
+            <div class="legendTitle">TMIN</div>
+            <mat-checkbox
+              *ngFor="let t of tminToggles"
+              class="legendItem"
+              [checked]="t.visible"
+              [disableRipple]="true"
+              (change)="onToggleDataset(t, $event.checked)">
+              <span class="swatch" *ngIf="t.color" [style.background]="t.color"></span>
+              {{ t.displayLabel }}
+            </mat-checkbox>
+          </div>
+
+          <div class="legendCol">
+            <div class="legendTitle">TMAX</div>
+            <mat-checkbox
+              *ngFor="let t of tmaxToggles"
+              class="legendItem"
+              [checked]="t.visible"
+              [disableRipple]="true"
+              (change)="onToggleDataset(t, $event.checked)">
+              <span class="swatch" *ngIf="t.color" [style.background]="t.color"></span>
+              {{ t.displayLabel }}
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <div class="canvas-container">
+          <canvas #chartCanvas></canvas>
+        </div>
       </div>
     </div>
   </mat-card-content>
