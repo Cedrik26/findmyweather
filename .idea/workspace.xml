@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="ladebalken hinzugefügt">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
-    </list>
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="layout graph 30% 70%" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,6 +19,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -90,7 +86,7 @@
       <updated>1769776881396</updated>
       <workItem from="1769776882585" duration="12284000" />
       <workItem from="1769803064563" duration="1591000" />
-      <workItem from="1770192274493" duration="5119000" />
+      <workItem from="1770192274493" duration="5444000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -156,7 +152,23 @@
       <option name="project" value="LOCAL" />
       <updated>1770194202851</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="layout graph 30% 70%">
+      <option name="closed" value="true" />
+      <created>1770197792451</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1770197792451</updated>
+    </task>
+    <task id="LOCAL-00010" summary="layout graph 30% 70%">
+      <option name="closed" value="true" />
+      <created>1770197883890</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1770197883890</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -181,7 +193,8 @@
     <MESSAGE value="feature graph" />
     <MESSAGE value="fixes" />
     <MESSAGE value="ladebalken hinzugefügt" />
-    <option name="LAST_COMMIT_MESSAGE" value="ladebalken hinzugefügt" />
+    <MESSAGE value="layout graph 30% 70%" />
+    <option name="LAST_COMMIT_MESSAGE" value="layout graph 30% 70%" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
