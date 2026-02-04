@@ -3,7 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/public/weatherstation.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +38,10 @@
     &quot;accountId&quot;: &quot;95c2bc66-f236-40d8-ad5d-766070c416b5&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -43,24 +50,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript Debug.app.html.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Node.js.weather-station-layer.models.ts.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "nodejs_package_manager_path": "npm",
-    "show.migrate.to.gradle.popup": "false",
-    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.app.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Node.js.weather-station-layer.models.ts.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/frontend/public" />
@@ -83,7 +90,8 @@
       <option name="presentableId" value="Default" />
       <updated>1769776881396</updated>
       <workItem from="1769776882585" duration="12284000" />
-      <workItem from="1769803064563" duration="1486000" />
+      <workItem from="1769803064563" duration="1591000" />
+      <workItem from="1770192274493" duration="1730000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -133,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769801292747</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fixes">
+      <option name="closed" value="true" />
+      <created>1769804569011</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1769804569011</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

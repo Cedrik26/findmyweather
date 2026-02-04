@@ -15,6 +15,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
 import { Subscription } from 'rxjs';
 
@@ -29,7 +30,7 @@ type TableRow = {
 @Component({
   selector: 'app-graphwindow',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './graphwindow.html',
   styleUrl: './graphwindow.css',
 })

@@ -9,7 +9,9 @@
   </button>
 
   <mat-card-content class="graph-content">
-    <div *ngIf="loading" class="state">Loading details…</div>
+    <div *ngIf="loading" class="state spinnerState" aria-label="Loading details">
+      <mat-progress-spinner mode="indeterminate" diameter="44"></mat-progress-spinner>
+    </div>
     <div *ngIf="!loading && error" class="state error">{{ error }}</div>
 
     <div *ngIf="!loading && !error && details" class="layout">

@@ -63,6 +63,14 @@
   font-size: 14px;
 }
 
+.state.spinnerState {
+  flex: 1 1 auto;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .state.error {
   color: #b00020;
 }
