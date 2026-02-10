@@ -52,6 +52,11 @@ type DatasetToggle = {
   templateUrl: './graphwindow.html',
   styleUrl: './graphwindow.css',
 })
+/**
+ * Component responsible for displaying detailed weather station data.
+ * Renders a chart (using Chart.js) and a data table.
+ * Handles data loading, visibility toggling of datasets, and error reporting.
+ */
 export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   @Input({ required: false }) stationId: string | null = null;
   @Input({ required: false }) startYear: number | null = null;
@@ -70,10 +75,16 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   /** UI-Toggles für Datasets (z.B. TMIN/TMAX + Seasons) */
   datasetToggles: DatasetToggle[] = [];
 
+  /**
+   * Returns toggles specifically for TMIN metrics.
+   */
   get tminToggles(): DatasetToggle[] {
     return this.datasetToggles.filter((t) => t.metric === 'TMIN');
   }
 
+  /**
+   * Returns toggles specifically for TMAX metrics.
+   */
   get tmaxToggles(): DatasetToggle[] {
     return this.datasetToggles.filter((t) => t.metric === 'TMAX');
   }
@@ -90,12 +101,19 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     private readonly cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Reloads data whenever inputs change.
+   * @param changes Change object.
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['stationId'] || changes['startYear'] || changes['endYear']) {
       this.load();
     }
   }
 
+  /**
+   * Cleanup subscriptions and chart instance on destruction.
+   */
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
     this.destroyChart();
@@ -109,6 +127,10 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Loads station details from the repository.
+   * Updates loading state and handles errors.
+   */
   private load(): void {
     this.sub?.unsubscribe();
     this.destroyChart();
@@ -167,6 +189,10 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
       });
   }
 
+  /**
+   * Schedules the chart rendering to happen after view initialization and potential layout updates.
+   * Uses requestAnimationFrame to ensure DOM is ready.
+   */
   private scheduleChartRender(): void {
     // wenn view noch nicht da -> nach AfterViewInit rendern
     if (!this.viewReady) {
@@ -195,6 +221,11 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     });
   }
 
+  /**
+   * Instantiates the Chart.js chart with the provided data.
+   * Configures scales, legends, and dataset styles.
+   * @param details The weather station details to visualize.
+   */
   private renderChart(details: WeatherStationDetails): void {
     const canvas = this.chartCanvas?.nativeElement;
     if (!canvas) return;
@@ -279,6 +310,11 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     }
   }
 
+  /**
+   * Toggles the visibility of a specific dataset in the chart.
+   * @param t The toggle object.
+   * @param checked The new checked state.
+   */
   onToggleDataset(t: DatasetToggle, checked: boolean): void {
     t.visible = checked;
 
@@ -308,6 +344,11 @@ function valAt(arr: number[], idx: number): number | null {
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
 
+/**
+ * Transforms the station details into rows for the data table.
+ * @param details Weather station details.
+ * @returns Array of rows.
+ */
 function buildTableRows(details: WeatherStationDetails): TableRow[] {
   const labels = details.labels ?? [];
   const datasets = details.datasets ?? [];
@@ -318,6 +359,11 @@ function buildTableRows(details: WeatherStationDetails): TableRow[] {
   }));
 }
 
+/**
+ * Formats a value for display in the table.
+ * Rounds numbers to 1 decimal place.
+ * @param v The value to format.
+ */
 function formatValue(v: unknown): string | number | null {
   if (v == null) return null;
   if (typeof v === 'number') {
@@ -340,6 +386,11 @@ function toFillColor(hex: string): string {
   return 'rgba(0, 0, 0, 0.05)';
 }
 
+/**
+ * Detects whether a label corresponds to TMIN or TMAX.
+ * @param label The dataset label.
+ * @returns 'TMIN', 'TMAX', or 'OTHER'.
+ */
 function detectMetricFromLabel(label: string): MetricKey {
   const upper = (label ?? '').toUpperCase();
   if (upper.includes('TMIN')) return 'TMIN';
@@ -347,6 +398,11 @@ function detectMetricFromLabel(label: string): MetricKey {
   return 'OTHER';
 }
 
+/**
+ * Builds the list of toggle objects based on the chart datasets.
+ * @param details Station details containing datasets.
+ * @returns Array of DatasetToggle objects.
+ */
 function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
   const datasets = details.datasets ?? [];
 
@@ -367,11 +423,21 @@ function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
   });
 }
 
+/**
+ * Determines if a dataset should be visible by default.
+ * Currently only 'Jahresdurchschnitt' is shown initially.
+ * @param label Dataset label.
+ */
 function isDefaultVisible(label: string): boolean {
   // Nur 'xxx Jahresdurchschnitt' soll initial sichtbar sein.
   return !!label && label.includes('Jahresdurchschnitt');
 }
 
+/**
+ * Removes the metric prefix (TMIN/TMAX) from the label for display purposes.
+ * @param label Full label.
+ * @param metric Detected metric.
+ */
 function stripMetricPrefix(label: string, metric: MetricKey): string {
   const raw = (label ?? '').trim();
   if (!raw) return raw;

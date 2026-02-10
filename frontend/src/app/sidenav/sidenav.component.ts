@@ -17,13 +17,28 @@ import {
 import { WeatherStationQuery } from '../weather-stations/weather-station.models';
 
 @Injectable()
+/**
+ * Custom DateAdapter that handles only years.
+ * Override format and parse to support year-only input fields.
+ */
 class YearOnlyDateAdapter extends NativeDateAdapter {
+  /**
+   * Formats a date to show only the full year.
+   * @param date The date to format.
+   * @param displayFormat The format to use (ignored here).
+   * @returns The year as a string.
+   */
   override format(date: Date, displayFormat: unknown): string {
     // Für unsere Inputs nur das Jahr anzeigen.
     if (!date) return '';
     return String(date.getFullYear());
   }
 
+  /**
+   * Parses a user input string into a Date object (January 1st of that year).
+   * @param value The input value to parse.
+   * @returns A Date object or null if invalid.
+   */
   override parse(value: unknown): Date | null {
     if (typeof value !== 'string') return null;
     const trimmed = value.trim();
@@ -70,25 +85,39 @@ const YEAR_ONLY_DATE_FORMATS = {
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
 })
+/**
+ * Main side navigation component for weather station search control.
+ * Handles inputs for coordinates, radius, station count, and date range selection.
+ */
 export class SidenavComponent implements OnChanges {
+  /** Event emitted when coordinates input changes. */
   @Output() coordinatesChange = new EventEmitter<{ latitude: string; longitude: string }>();
+
+  /** Event emitted when radius slider changes. */
   @Output() radiusChange = new EventEmitter<number>();
+
+  /** Event emitted to trigger a station lookup with the collected query parameters. */
   @Output() lookupStations = new EventEmitter<WeatherStationQuery>();
 
+  /** Latitude input from parent (for two-way binding or initial set). */
   @Input() latitude = '';
+
+  /** Longitude input from parent (for two-way binding or initial set). */
   @Input() longitude = '';
 
-  /** interne Werte für die Inputs (ngModel) */
+  /** Internal value for latitude input field. */
   latitudeValue = '';
+
+  /** Internal value for longitude input field. */
   longitudeValue = '';
 
-  /** Radius in km – Default soll 5 sein */
+  /** Search radius in kilometers. Defaults to 5 km. */
   radius = 5;
 
-  /** Anzahl Wetterstationen (Slider) */
+  /** Number of weather stations to limit the search to. */
   weatherStationCount = 5;
 
-  /** Toggle: alle Wetterstationen auswählen */
+  /** Toggle state for selecting all available weather stations. */
   selectAllStations = true;
 
   stationCount: string | null = null;
@@ -102,6 +131,11 @@ export class SidenavComponent implements OnChanges {
   startYear: Date | null = null;
   endYear: Date | null = null;
 
+  /**
+   * Lifecycle hook called when input properties change.
+   * Updates internal values if parent inputs change.
+   * @param changes Object containing changed properties.
+   */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['latitude']) {
       this.latitudeValue = this.latitude ?? '';
@@ -111,6 +145,12 @@ export class SidenavComponent implements OnChanges {
     }
   }
 
+  /**
+   * Sets the start year from the date picker.
+   * Adjusts the end year if it is before the new start year.
+   * @param normalizedYear The date selected in the picker.
+   * @param picker The datepicker instance to close.
+   */
   setStartYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
     const year = normalizedYear.getFullYear();
     this.startYear = new Date(year, 0, 1);
@@ -123,6 +163,12 @@ export class SidenavComponent implements OnChanges {
     picker.close();
   }
 
+  /**
+   * Sets the end year from the date picker.
+   * Swaps start and end year if end year is before start year.
+   * @param normalizedYear The date selected in the picker.
+   * @param picker The datepicker instance to close.
+   */
   setEndYear(normalizedYear: Date, picker: MatDatepicker<Date>): void {
     const year = normalizedYear.getFullYear();
     const end = new Date(year, 0, 1);
@@ -138,6 +184,9 @@ export class SidenavComponent implements OnChanges {
     picker.close();
   }
 
+  /**
+   * Emits the current coordinates when inputs change.
+   */
   onCoordinatesInputChange(): void {
     this.coordinatesChange.emit({
       latitude: this.latitudeValue,
@@ -145,6 +194,11 @@ export class SidenavComponent implements OnChanges {
     });
   }
 
+  /**
+   * Handles changes to the radius slider.
+   * updates the radius and emits the change event.
+   * @param value The new radius value.
+   */
   onRadiusChange(value: number): void {
     const n = Number(value);
     if (!Number.isFinite(n)) return;
@@ -152,6 +206,10 @@ export class SidenavComponent implements OnChanges {
     this.radiusChange.emit(n);
   }
 
+  /**
+   * Triggers the weather station lookup.
+   * Collects all form data, validates coordinates, and emits the query object.
+   */
   lookupWeatherStations(): void {
     const lat = parseCoordOrNull(this.latitudeValue);
     const lng = parseCoordOrNull(this.longitudeValue);
@@ -169,6 +227,12 @@ export class SidenavComponent implements OnChanges {
   }
 }
 
+/**
+ * Helper function to parse coordinate strings.
+ * Handles decimal points, commas, and validates numbers.
+ * @param raw The raw string input.
+ * @returns The parsed number or null if invalid.
+ */
 function parseCoordOrNull(raw: string): number | null {
   const trimmed = (raw ?? '').trim();
   if (!trimmed) return null;

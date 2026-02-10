@@ -4,12 +4,17 @@ import { Observable, forkJoin, map } from 'rxjs';
 import { WeatherStation, WeatherStationDetails, WeatherStationInfo, WeatherStationQuery } from './weather-station.models';
 
 @Injectable({ providedIn: 'root' })
+/**
+ * Repository service responsible for fetching weather station data from the backend.
+ * Provides methods to search for stations and retrieve detailed data for specific stations.
+ */
 export class WeatherStationRepositoryService {
   constructor(private readonly http: HttpClient) {}
 
   /**
-   * Ruft nahe Stationen vom Backend ab.
-   * Backend: GET /api/stations?lat=..&lon=..&radiusKm=..&maxStations=..&startYear=..&endYear=..
+   * Searches for weather stations based on geographic and capability criteria.
+   * @param query The search parameters (coordinates, radius, year range, etc.).
+   * @returns Observable of station list.
    */
   searchStations(query: WeatherStationQuery): Observable<WeatherStation[]> {
     let params = new HttpParams()
@@ -27,15 +32,21 @@ export class WeatherStationRepositoryService {
     return this.http.get<WeatherStation[]>('/api/stations', { params });
   }
 
+  /**
+   * Fetches metadata for a single station by ID.
+   * @param stationId The station identifier.
+   * @returns Observable of station info.
+   */
   private getStationInfo(stationId: string): Observable<WeatherStationInfo> {
     return this.http.get<WeatherStationInfo>(`/api/stations/${encodeURIComponent(stationId)}`);
   }
 
   /**
-   * Lädt Chart/Detaildaten + Station-Metadaten.
-   * Backend:
-   *  - GET /api/stations/:id
-   *  - GET /api/stations/:id/data?...
+   * Retrieves full details for a station, including chart data and metadata.
+   * Parallelizes requests for metadata and data series.
+   * @param stationId The station identifier.
+   * @param opts Optional filters for data range and metrics.
+   * @returns Observable of combined station details.
    */
   getStationDetails(
     stationId: string,
