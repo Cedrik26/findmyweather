@@ -124,7 +124,7 @@ export class SidenavComponent implements OnChanges {
   readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
 
   /** Maximal wählbares Jahr */
-  readonly maxYear = 2026;
+  readonly maxYear = 2025;
   readonly maxDate = new Date(this.maxYear, 11, 31);
 
   /** Start-/Endjahr: wir speichern Dates, zeigen aber nur YYYY */
