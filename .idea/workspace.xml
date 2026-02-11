@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="tabelle passt sich dynamisch an">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770822478292</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="tabelle passt sich dynamisch an">
+      <option name="closed" value="true" />
+      <created>1770823467450</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1770823467450</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

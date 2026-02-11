@@ -61,7 +61,7 @@
 .graphOverlay {
   position: fixed;
   /* innerhalb der Kartenfläche, nicht unter dem Logo */
-  top: 100px;
+  top: clamp(72px, 9vh, 110px);
   bottom: var(--overlay-gap);
 
   /* links/rechts immer identischer Abstand */
