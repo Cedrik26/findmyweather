@@ -114,19 +114,26 @@ describe('Graphwindow', () => {
       ]
     };
 
-    // Load data through component (or directly set properties if load() is too complex to mock here)
-    // We can simulate the result of load()
     component.details = mockDetails as any;
+    component.loading = false;
+    component.error = null;
+
+    // Neu: Tabelle zeigt nur sichtbare Datasets -> beide sichtbar setzen
+    component.datasetToggles = [
+      { datasetIndex: 0, label: 'DS1', displayLabel: 'DS1', metric: 'TMIN', visible: true, color: '#111111' },
+      { datasetIndex: 1, label: 'DS2', displayLabel: 'DS2', metric: 'TMAX', visible: true, color: '#222222' }
+    ] as any;
+
+    // tableRows entsprechend der sichtbaren Datasets
     component.tableRows = [
       { label: '2000', values: [10, 20] },
       { label: '2001', values: [11, 22] }
     ];
-    component.loading = false;
 
     fixture.detectChanges();
     await fixture.whenStable();
 
-    // Check Headers: Label + 2 Datasets = 3 columns
+    // Check Headers: Label + 2 sichtbare Datasets = 3 columns
     const headers = fixture.debugElement.queryAll(By.css('.dataTable thead th'));
     expect(headers.length).toBe(3);
     expect(headers[1].nativeElement.textContent).toContain('DS1');
