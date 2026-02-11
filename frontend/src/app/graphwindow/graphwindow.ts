@@ -276,7 +276,8 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
             tension: typeof d.tension === 'number' ? d.tension : 0.25,
             fill: false,
             showLine: true,
-            spanGaps: true,
+            // keine Linien über Datenlücken verbinden
+            spanGaps: false,
             pointRadius: 2,
             pointHoverRadius: 4,
             pointHitRadius: 8,
@@ -470,8 +471,8 @@ function getColor(label: string | undefined, idx: number): string {
 
   // Winter
   if (l.includes('WINTER')) {
-    if (l.includes('TMAX')) return '#B0E0E6';
-    if (l.includes('TMIN')) return '#4682B4';
+    if (l.includes('TMAX')) return '#9de3ec';
+    if (l.includes('TMIN')) return '#4583b8';
   }
 
   // Frühling
@@ -482,14 +483,14 @@ function getColor(label: string | undefined, idx: number): string {
 
   // Sommer (gelber, damit klarer Unterschied zu Herbst)
   if (l.includes('SOMMER')) {
-    if (l.includes('TMAX')) return '#FAFAD2';
-    if (l.includes('TMIN')) return '#FFD700';
+    if (l.includes('TMAX')) return '#d1d166';
+    if (l.includes('TMIN')) return '#ffd700';
   }
 
   // Herbst
   if (l.includes('HERBST')) {
-    if (l.includes('TMAX')) return '#F5DEB3';
-    if (l.includes('TMIN')) return '#8B4513';
+    if (l.includes('TMAX')) return '#ff82ab';
+    if (l.includes('TMIN')) return '#ff1493';
   }
 
   return fallback;

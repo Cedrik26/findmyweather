@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="graph farben angepasst">
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" afterDir="false" />
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="tabelle passt sich dynamisch an">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -188,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770821830430</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="tabelle passt sich dynamisch an">
+      <option name="closed" value="true" />
+      <created>1770822478292</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1770822478292</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -245,7 +253,8 @@
     <MESSAGE value="h" />
     <MESSAGE value="fix" />
     <MESSAGE value="graph farben angepasst" />
-    <option name="LAST_COMMIT_MESSAGE" value="graph farben angepasst" />
+    <MESSAGE value="tabelle passt sich dynamisch an" />
+    <option name="LAST_COMMIT_MESSAGE" value="tabelle passt sich dynamisch an" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
