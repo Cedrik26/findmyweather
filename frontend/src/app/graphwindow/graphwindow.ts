@@ -89,6 +89,21 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     return this.datasetToggles.filter((t) => t.metric === 'TMAX');
   }
 
+  /**
+   * Nur die Datasets, die aktuell (via Checkbox) sichtbar sind.
+   * Wird von der Datentabelle verwendet.
+   */
+  get visibleDatasets(): NonNullable<WeatherStationDetails['datasets']> {
+    const datasets = this.details?.datasets ?? [];
+    if (!datasets.length) return [];
+
+    // Reihenfolge beibehalten; nur sichtbare Spalten zurückgeben
+    return datasets.filter((_, i) => {
+      const t = this.datasetToggles.find((x) => x.datasetIndex === i);
+      return t?.visible ?? false;
+    });
+  }
+
   private sub?: Subscription;
   private chart?: Chart;
 
@@ -163,8 +178,9 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
       .subscribe({
         next: (details) => {
           this.details = details;
-          this.tableRows = buildTableRows(details);
           this.datasetToggles = buildDatasetToggles(details);
+          // Tabelle initial mit den standardmäßig sichtbaren Spalten aufbauen
+          this.tableRows = buildTableRows(this.details, this.visibleDatasets);
           this.loading = false;
 
           // UI sofort aktualisieren (Overlay/zoneless edgecase)
@@ -318,6 +334,11 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   onToggleDataset(t: DatasetToggle, checked: boolean): void {
     t.visible = checked;
 
+    // Tabelle neu aufbauen, da sich die sichtbaren Spalten geändert haben
+    if (this.details) {
+      this.tableRows = buildTableRows(this.details, this.visibleDatasets);
+    }
+
     const chart = this.chart;
     if (!chart) return;
 
@@ -349,13 +370,15 @@ function valAt(arr: number[], idx: number): number | null {
  * @param details Weather station details.
  * @returns Array of rows.
  */
-function buildTableRows(details: WeatherStationDetails): TableRow[] {
+function buildTableRows(
+  details: WeatherStationDetails,
+  visibleDatasets: NonNullable<WeatherStationDetails['datasets']>
+): TableRow[] {
   const labels = details.labels ?? [];
-  const datasets = details.datasets ?? [];
 
   return labels.map((label, i) => ({
     label,
-    values: datasets.map((ds) => formatValue(ds.data?.[i])),
+    values: visibleDatasets.map((ds) => formatValue(ds.data?.[i])),
   }));
 }
 
@@ -375,17 +398,18 @@ function formatValue(v: unknown): string | number | null {
   return String(v);
 }
 
-
-function toFillColor(hex: string): string {
-  // sehr simple: feste leichte Transparenz (funktioniert auch wenn schon rgba übergeben wird)
-  if (hex.startsWith('rgba')) return hex;
-  return 'rgba(0, 0, 0, 0.05)';
+/**
+ * Detects whether a label corresponds to TMIN or TMAX.
+ */
+function detectMetricFromLabel(label: string): MetricKey {
+  const upper = (label ?? '').toUpperCase();
+  if (upper.includes('TMIN')) return 'TMIN';
+  if (upper.includes('TMAX')) return 'TMAX';
+  return 'OTHER';
 }
 
 /**
  * Determines if a dataset should be visible by default.
- * Currently only 'Jahresdurchschnitt' is shown initially.
- * @param label Dataset label.
  */
 function isDefaultVisible(label: string): boolean {
   // Nur 'xxx Jahresdurchschnitt' soll initial sichtbar sein.
@@ -394,8 +418,6 @@ function isDefaultVisible(label: string): boolean {
 
 /**
  * Removes the metric prefix (TMIN/TMAX) from the label for display purposes.
- * @param label Full label.
- * @param metric Detected metric.
  */
 function stripMetricPrefix(label: string, metric: MetricKey): string {
   const raw = (label ?? '').trim();
@@ -407,26 +429,11 @@ function stripMetricPrefix(label: string, metric: MetricKey): string {
 }
 
 /**
- * Detects whether a label corresponds to TMIN or TMAX.
- * @param label The dataset label.
- * @returns 'TMIN', 'TMAX', or 'OTHER'.
- */
-function detectMetricFromLabel(label: string): MetricKey {
-  const upper = (label ?? '').toUpperCase();
-  if (upper.includes('TMIN')) return 'TMIN';
-  if (upper.includes('TMAX')) return 'TMAX';
-  return 'OTHER';
-}
-
-/**
  * Builds the list of toggle objects based on the chart datasets.
- * @param details Station details containing datasets.
- * @returns Array of DatasetToggle objects.
  */
 function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
   const datasets = details.datasets ?? [];
 
-  // Reihenfolge beibehalten (steht schon in Details)
   return datasets.map((ds, idx) => {
     const metric = detectMetricFromLabel(ds.label);
     const displayLabel = stripMetricPrefix(ds.label, metric);
@@ -437,57 +444,52 @@ function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
       displayLabel,
       metric,
       visible: isDefaultVisible(ds.label),
-      // Checkbox-Farb-Swatch: gleicher Algorithmus wie beim Chart
       color: getColor(ds.label, idx),
     } satisfies DatasetToggle;
   });
 }
 
 /**
- * Liefert die Farbe für ein Dataset basierend auf Label + Index.
- *
- * Anforderungen:
- * - Tmax Jahresdurchschnitt → Reines Rot (RGB: 255,0,0)
- * - Tmin Jahresdurchschnitt → Reines Blau (RGB: 0,0,255)
- * - Saisonale Durchschnitte → Pastelltöne; Tmin dunkler als Tmax
+ * Farbschema:
+ * - Tmax Jahresdurchschnitt → #FF0000
+ * - Tmin Jahresdurchschnitt → #0000FF
+ * - Saisonale Durchschnitte → Pastell; Tmin dunkler als Tmax
  */
 function getColor(label: string | undefined, idx: number): string {
-  // Fallback, falls Label nicht erkannt wird
-  const palette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
-  const fallback = palette[idx % palette.length]!;
+  const fallbackPalette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
+  const fallback = fallbackPalette[idx % fallbackPalette.length]!;
 
   if (!label) return fallback;
   const l = label.toUpperCase();
 
   // Jahresdurchschnitt
   if (l.includes('JAHRESDURCHSCHNITT')) {
-    if (l.includes('TMAX')) return '#FF0000'; // Reines Rot
-    if (l.includes('TMIN')) return '#0000FF'; // Reines Blau
+    if (l.includes('TMAX')) return '#FF0000';
+    if (l.includes('TMIN')) return '#0000FF';
   }
 
-  // Saisonale Durchschnitte: Pastell (TMAX) vs. dunkler (TMIN)
   // Winter
   if (l.includes('WINTER')) {
-    if (l.includes('TMAX')) return '#B0E0E6'; // Pastell-Blau (PowderBlue)
-    if (l.includes('TMIN')) return '#4682B4';  // Dunkleres Blau (SteelBlue)
+    if (l.includes('TMAX')) return '#B0E0E6';
+    if (l.includes('TMIN')) return '#4682B4';
   }
 
   // Frühling
   if (l.includes('FRÜHLING') || l.includes('FRUEHLING') || l.includes('FRUeHLING')) {
-    if (l.includes('TMAX')) return '#98FB98'; // Pastell-Grün (PaleGreen)
-    if (l.includes('TMIN')) return '#228B22';   // Dunkleres Grün (ForestGreen)
+    if (l.includes('TMAX')) return '#98FB98';
+    if (l.includes('TMIN')) return '#228B22';
   }
 
-  // Sommer
+  // Sommer (gelber, damit klarer Unterschied zu Herbst)
   if (l.includes('SOMMER')) {
-    if (l.includes('TMAX')) return '#efef71'; // Pastell-Gelb (LemonChiffon)
-    if (l.includes('TMIN')) return '#FFD700';  // Dunkleres Gelb (Gold)
+    if (l.includes('TMAX')) return '#FAFAD2';
+    if (l.includes('TMIN')) return '#FFD700';
   }
 
   // Herbst
   if (l.includes('HERBST')) {
-    if (l.includes('TMAX')) return '#ff82ab'; // Pastell-Braun/Wheat
-    if (l.includes('TMIN')) return '#ff1493';   // Dunkleres Braun (SaddleBrown)
+    if (l.includes('TMAX')) return '#F5DEB3';
+    if (l.includes('TMIN')) return '#8B4513';
   }
 
   return fallback;

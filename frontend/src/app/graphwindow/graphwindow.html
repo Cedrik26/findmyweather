@@ -35,7 +35,8 @@
             <thead>
               <tr>
                 <th>Label</th>
-                <th *ngFor="let ds of details.datasets">{{ ds.label }}</th>
+                <!-- Nur die Spalten anzeigen, die im Diagramm aktiv sind -->
+                <th *ngFor="let ds of visibleDatasets">{{ ds.label }}</th>
               </tr>
             </thead>
             <tbody>
