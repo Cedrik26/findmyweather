@@ -164,6 +164,7 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
         next: (details) => {
           this.details = details;
           this.tableRows = buildTableRows(details);
+          this.datasetToggles = buildDatasetToggles(details);
           this.loading = false;
 
           // UI sofort aktualisieren (Overlay/zoneless edgecase)
@@ -248,21 +249,25 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
       type: 'line',
       data: {
         labels: details.labels,
-        datasets: details.datasets.map((d, idx) => ({
-          label: d.label,
-          data: d.data,
-          borderColor: d.borderColor ?? defaultColor(idx),
-          backgroundColor: 'transparent',
-          tension: typeof d.tension === 'number' ? d.tension : 0.25,
-          fill: false,
-          showLine: true,
-          spanGaps: true,
-          pointRadius: 2,
-          pointHoverRadius: 4,
-          pointHitRadius: 8,
-          borderWidth: 2,
-          hidden: !isDefaultVisible(d.label),
-        })),
+        datasets: details.datasets.map((d, idx) => {
+          const toggle = this.datasetToggles.find(t => t.datasetIndex === idx);
+          return {
+            label: d.label,
+            data: d.data,
+            // Erzwinge die Farbe vom Toggle, um Konsistenz mit der Checkbox zu garantieren
+            borderColor: toggle?.color ?? d.borderColor ?? getColor(d.label, idx),
+            backgroundColor: 'transparent',
+            tension: typeof d.tension === 'number' ? d.tension : 0.25,
+            fill: false,
+            showLine: true,
+            spanGaps: true,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointHitRadius: 8,
+            borderWidth: 2,
+            hidden: !isDefaultVisible(d.label),
+          };
+        }),
       },
       options: {
         responsive: true,
@@ -297,11 +302,6 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
 
     try {
       this.chart = new Chart(canvas, cfg);
-
-      // Dataset-Toggles nach dem Rendern aufbauen (wir brauchen dataset indices)
-      this.datasetToggles = buildDatasetToggles(details);
-
-      this.cdr.detectChanges();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('[chart] render failed', e);
@@ -375,52 +375,11 @@ function formatValue(v: unknown): string | number | null {
   return String(v);
 }
 
-function defaultColor(idx: number): string {
-  const palette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
-  return palette[idx % palette.length]!;
-}
 
 function toFillColor(hex: string): string {
   // sehr simple: feste leichte Transparenz (funktioniert auch wenn schon rgba übergeben wird)
   if (hex.startsWith('rgba')) return hex;
   return 'rgba(0, 0, 0, 0.05)';
-}
-
-/**
- * Detects whether a label corresponds to TMIN or TMAX.
- * @param label The dataset label.
- * @returns 'TMIN', 'TMAX', or 'OTHER'.
- */
-function detectMetricFromLabel(label: string): MetricKey {
-  const upper = (label ?? '').toUpperCase();
-  if (upper.includes('TMIN')) return 'TMIN';
-  if (upper.includes('TMAX')) return 'TMAX';
-  return 'OTHER';
-}
-
-/**
- * Builds the list of toggle objects based on the chart datasets.
- * @param details Station details containing datasets.
- * @returns Array of DatasetToggle objects.
- */
-function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
-  const datasets = details.datasets ?? [];
-
-  // Reihenfolge beibehalten (steht schon in Details)
-  return datasets.map((ds, idx) => {
-    const color = ds.borderColor ?? undefined;
-    const metric = detectMetricFromLabel(ds.label);
-    const displayLabel = stripMetricPrefix(ds.label, metric);
-
-    return {
-      datasetIndex: idx,
-      label: ds.label,
-      displayLabel,
-      metric,
-      visible: isDefaultVisible(ds.label),
-      color,
-    } satisfies DatasetToggle;
-  });
 }
 
 /**
@@ -445,4 +404,91 @@ function stripMetricPrefix(label: string, metric: MetricKey): string {
   if (metric === 'TMIN') return raw.replace(/^TMIN\s*/i, '').trim();
   if (metric === 'TMAX') return raw.replace(/^TMAX\s*/i, '').trim();
   return raw;
+}
+
+/**
+ * Detects whether a label corresponds to TMIN or TMAX.
+ * @param label The dataset label.
+ * @returns 'TMIN', 'TMAX', or 'OTHER'.
+ */
+function detectMetricFromLabel(label: string): MetricKey {
+  const upper = (label ?? '').toUpperCase();
+  if (upper.includes('TMIN')) return 'TMIN';
+  if (upper.includes('TMAX')) return 'TMAX';
+  return 'OTHER';
+}
+
+/**
+ * Builds the list of toggle objects based on the chart datasets.
+ * @param details Station details containing datasets.
+ * @returns Array of DatasetToggle objects.
+ */
+function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
+  const datasets = details.datasets ?? [];
+
+  // Reihenfolge beibehalten (steht schon in Details)
+  return datasets.map((ds, idx) => {
+    const metric = detectMetricFromLabel(ds.label);
+    const displayLabel = stripMetricPrefix(ds.label, metric);
+
+    return {
+      datasetIndex: idx,
+      label: ds.label,
+      displayLabel,
+      metric,
+      visible: isDefaultVisible(ds.label),
+      // Checkbox-Farb-Swatch: gleicher Algorithmus wie beim Chart
+      color: getColor(ds.label, idx),
+    } satisfies DatasetToggle;
+  });
+}
+
+/**
+ * Liefert die Farbe für ein Dataset basierend auf Label + Index.
+ *
+ * Anforderungen:
+ * - Tmax Jahresdurchschnitt → Reines Rot (RGB: 255,0,0)
+ * - Tmin Jahresdurchschnitt → Reines Blau (RGB: 0,0,255)
+ * - Saisonale Durchschnitte → Pastelltöne; Tmin dunkler als Tmax
+ */
+function getColor(label: string | undefined, idx: number): string {
+  // Fallback, falls Label nicht erkannt wird
+  const palette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
+  const fallback = palette[idx % palette.length]!;
+
+  if (!label) return fallback;
+  const l = label.toUpperCase();
+
+  // Jahresdurchschnitt
+  if (l.includes('JAHRESDURCHSCHNITT')) {
+    if (l.includes('TMAX')) return '#FF0000'; // Reines Rot
+    if (l.includes('TMIN')) return '#0000FF'; // Reines Blau
+  }
+
+  // Saisonale Durchschnitte: Pastell (TMAX) vs. dunkler (TMIN)
+  // Winter
+  if (l.includes('WINTER')) {
+    if (l.includes('TMAX')) return '#B0E0E6'; // Pastell-Blau (PowderBlue)
+    if (l.includes('TMIN')) return '#4682B4';  // Dunkleres Blau (SteelBlue)
+  }
+
+  // Frühling
+  if (l.includes('FRÜHLING') || l.includes('FRUEHLING') || l.includes('FRUeHLING')) {
+    if (l.includes('TMAX')) return '#98FB98'; // Pastell-Grün (PaleGreen)
+    if (l.includes('TMIN')) return '#228B22';   // Dunkleres Grün (ForestGreen)
+  }
+
+  // Sommer
+  if (l.includes('SOMMER')) {
+    if (l.includes('TMAX')) return '#efef71'; // Pastell-Gelb (LemonChiffon)
+    if (l.includes('TMIN')) return '#FFD700';  // Dunkleres Gelb (Gold)
+  }
+
+  // Herbst
+  if (l.includes('HERBST')) {
+    if (l.includes('TMAX')) return '#ff82ab'; // Pastell-Braun/Wheat
+    if (l.includes('TMIN')) return '#ff1493';   // Dunkleres Braun (SaddleBrown)
+  }
+
+  return fallback;
 }

@@ -2,20 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="fix">
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/setup-vitest.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/vitest.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/map/map.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/map/map.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-search.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-search.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
