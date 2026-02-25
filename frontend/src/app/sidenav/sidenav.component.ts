@@ -120,6 +120,9 @@ export class SidenavComponent implements OnChanges {
   /** Toggle state for selecting all available weather stations. */
   selectAllStations = true;
 
+  /** Darkmode State (UI Switch) */
+  darkMode = false;
+
   stationCount: string | null = null;
   readonly stationOptions = ['Option 1', 'Option 2', 'Option 3'];
 
@@ -142,6 +145,11 @@ export class SidenavComponent implements OnChanges {
     }
     if (changes['longitude']) {
       this.longitudeValue = this.longitude ?? '';
+    }
+
+    // Initial state anwenden (falls Komponente neu erstellt wird)
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('dark-mode', this.darkMode);
     }
   }
 
@@ -204,6 +212,18 @@ export class SidenavComponent implements OnChanges {
     if (!Number.isFinite(n)) return;
     this.radius = n;
     this.radiusChange.emit(n);
+  }
+
+  /**
+   * Toggles dark mode by adding/removing a class on the document body.
+   */
+  onDarkModeToggle(enabled: boolean): void {
+    this.darkMode = !!enabled;
+
+    // globaler Toggle, damit auch Graphwindow/Tabellenhintergründe betroffen sind
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('dark-mode', this.darkMode);
+    }
   }
 
   /**

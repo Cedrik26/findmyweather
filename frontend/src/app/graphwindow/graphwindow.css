@@ -292,3 +292,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* (Darkmode Tabellenlinien werden global in src/styles.scss gesetzt) */

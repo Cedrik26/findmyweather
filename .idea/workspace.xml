@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="tabelle passt sich dynamisch an">
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="jahr angepast">
+      <change afterPath="$PROJECT_DIR$/frontend/src/styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +50,9 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="38yflLU7v45kwplcT9N7VD0211T" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -70,6 +81,19 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="findmyweather3" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="findmyweather3" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -90,6 +114,8 @@
       <workItem from="1770192274493" duration="5444000" />
       <workItem from="1770646239101" duration="1362000" />
       <workItem from="1770724892977" duration="6834000" />
+      <workItem from="1772006516465" duration="92000" />
+      <workItem from="1772006614841" duration="6981000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -219,7 +245,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770824098247</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="jahr angepast">
+      <option name="closed" value="true" />
+      <created>1770824658947</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1770824658947</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -277,7 +311,8 @@
     <MESSAGE value="fix" />
     <MESSAGE value="graph farben angepasst" />
     <MESSAGE value="tabelle passt sich dynamisch an" />
-    <option name="LAST_COMMIT_MESSAGE" value="tabelle passt sich dynamisch an" />
+    <MESSAGE value="jahr angepast" />
+    <option name="LAST_COMMIT_MESSAGE" value="jahr angepast" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -91,5 +91,17 @@
       [disabled]="!startYear || !endYear">
       lookup weather stations
     </button>
+
+    <!-- Darkmode Switch unten rechts -->
+    <div class="darkmodeRow">
+      <span class="darkmodeLabel">Normal</span>
+      <mat-slide-toggle
+        [(ngModel)]="darkMode"
+        name="darkMode"
+        aria-label="Darkmode umschalten"
+        (ngModelChange)="onDarkModeToggle($event)">
+        Dark
+      </mat-slide-toggle>
+    </div>
   </div>
 </div>

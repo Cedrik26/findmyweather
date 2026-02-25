@@ -1,0 +1,196 @@
+// Global styles + Angular Material M3 theming (light + dark)
+//
+// We scope the dark theme to `body.dark-mode`, because your app toggles that class
+// via the sidenav slide-toggle.
+
+@use '@angular/material' as mat;
+
+/* Leaflet (OpenStreetMap) default styles */
+@import 'leaflet/dist/leaflet.css';
+
+// ------------------------------------------------------------
+// Material themes
+// ------------------------------------------------------------
+
+// Use Material provided palettes (maps). This closely matches the previous
+// prebuilt "azure-blue" look.
+$primary: mat.$azure-palette;
+$tertiary: mat.$cyan-palette;
+
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: $primary,
+      tertiary: $tertiary,
+    ),
+    typography: (
+      brand-family: Arial,
+      plain-family: Arial,
+    )
+  )
+);
+
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: $primary,
+      tertiary: $tertiary,
+    ),
+    typography: (
+      brand-family: Arial,
+      plain-family: Arial,
+    )
+  )
+);
+
+// Include full component themes once (base + light colors)
+:root {
+  @include mat.all-component-themes($light-theme);
+}
+
+// For dark mode we only override colors (keeps density/typography stable)
+body.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+}
+
+// ------------------------------------------------------------
+// App global styles
+// ------------------------------------------------------------
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+// Slightly lighter dark surfaces (not pure black)
+body.dark-mode {
+  // app-level surfaces used for non-Material panels
+  --dm-surface: #333333;
+  --dm-surface-2: #353535;
+
+  color: rgba(255, 255, 255, 0.92);
+}
+
+// Leaflet Popup: "Lookup Graph" button made to look like a Material flat button
+.leaflet-popup-content .mat-like-flat-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 0;
+  border-radius: 9999px;
+  padding: 10px 16px;
+
+  cursor: pointer;
+  user-select: none;
+
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+
+  background: var(--mat-sys-primary, #1976d2);
+  color: var(--mat-sys-on-primary, #fff);
+}
+
+.leaflet-popup-content .mat-like-flat-button:hover {
+  filter: brightness(0.95);
+}
+
+.leaflet-popup-content .mat-like-flat-button:active {
+  filter: brightness(0.9);
+}
+
+.leaflet-popup-content .mat-like-flat-button:focus-visible {
+  outline: 2px solid var(--mat-sys-primary, #1976d2);
+  outline-offset: 2px;
+}
+
+// Leaflet must remain clickable (popups/controls), even if other overlays tweak pointer-events
+.leaflet-container,
+.leaflet-pane,
+.leaflet-control,
+.leaflet-popup-pane,
+.leaflet-popup {
+  pointer-events: auto;
+}
+
+// Darkmode: Leaflet popup background
+body.dark-mode .leaflet-popup-content-wrapper,
+body.dark-mode .leaflet-popup-tip {
+  background: var(--dm-surface) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+body.dark-mode .leaflet-popup-content {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+// Darkmode: app panels (non-material backgrounds)
+body.dark-mode .sidenav,
+body.dark-mode .panel,
+body.dark-mode .graph-card,
+body.dark-mode .graph-content,
+body.dark-mode .stationInfo,
+body.dark-mode .chartWrap,
+body.dark-mode .chartLegend,
+body.dark-mode .tableWrap,
+body.dark-mode .dataTable thead th {
+  background: var(--dm-surface) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+// Datepicker popup a bit brighter
+body.dark-mode .mat-datepicker-content,
+body.dark-mode .mat-calendar,
+body.dark-mode .mat-calendar-body,
+body.dark-mode .mat-calendar-table {
+  background: var(--dm-surface-2) !important;
+}
+
+// Sidenav custom labels/hints in darkmode
+body.dark-mode .label,
+body.dark-mode .rowLabel,
+body.dark-mode .hint,
+body.dark-mode .darkmodeLabel {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+// Darkmode: Tabellenlinien (TableWrap + Separatoren) in hellgrau
+// (sowohl Container-Rahmen als auch Zeilentrenner)
+body.dark-mode .tableWrap {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+body.dark-mode .dataTable thead th {
+  border-bottom-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+body.dark-mode .dataTable td {
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+// Darkmode: weiße Rahmen um Material-Content im Graphwindow
+body.dark-mode app-graphwindow mat-card-content,
+body.dark-mode app-graphwindow .mat-mdc-card-content {
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 8px;
+}
+
+// Optional: auch die wichtigsten Content-Panels im Graphwindow klar umranden
+body.dark-mode app-graphwindow .stationInfo,
+body.dark-mode app-graphwindow .tableWrap,
+body.dark-mode app-graphwindow .chartWrap,
+body.dark-mode app-graphwindow .chartLegend {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
