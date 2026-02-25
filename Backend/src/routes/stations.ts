@@ -53,8 +53,8 @@ router.get(
             // Filter by year range if specified
             if (startYear || endYear) {
                 stations = stations.filter(s => {
-                    if (startYear && s.lastYear < startYear) return false;
-                    if (endYear && s.firstYear > endYear) return false;
+                    if (startYear && s.lastYear < endYear) return false;
+                    if (endYear && s.firstYear > startYear) return false;
                     return true;
                 });
             }
