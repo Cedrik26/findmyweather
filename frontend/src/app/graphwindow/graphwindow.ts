@@ -110,6 +110,8 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   private viewReady = false;
   private pendingRender = false;
 
+  private darkModeObserver?: MutationObserver;
+
   constructor(
     private readonly repo: WeatherStationRepositoryService,
     private readonly ngZone: NgZone,
@@ -132,14 +134,81 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
     this.destroyChart();
+    this.darkModeObserver?.disconnect();
+    this.darkModeObserver = undefined;
   }
 
   ngAfterViewInit(): void {
     this.viewReady = true;
+
+    // Reagiere auf Darkmode-Toggle, auch wenn das Graphwindow bereits offen ist.
+    // (Chart.js zeichnet Canvas-Text; CSS/SCSS kann die Tick-Farben nicht ändern.)
+    if (typeof document !== 'undefined') {
+      this.darkModeObserver = new MutationObserver(() => {
+        this.applyChartTheme();
+      });
+      this.darkModeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+    }
+
     // falls Daten schon da sind, aber Canvas vorher noch nicht existierte
     if (this.details && !this.error) {
       this.scheduleChartRender();
     }
+  }
+
+  /**
+   * Applies light/dark colors to the existing chart instance (axes + grid + tooltip).
+   * Needed because Chart.js renders into canvas and won't react to CSS theme changes.
+   */
+  private applyChartTheme(): void {
+    const chart = this.chart;
+    if (!chart) return;
+
+    const isDarkMode = typeof document !== 'undefined' && document.body.classList.contains('dark-mode');
+    const axisColor = isDarkMode ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.7)';
+    const gridColor = isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+
+    // Global defaults (Chart.js fallback)
+    Chart.defaults.color = axisColor;
+    Chart.defaults.borderColor = gridColor;
+    (Chart.defaults.plugins as any).tooltip = {
+      ...((Chart.defaults.plugins as any).tooltip ?? {}),
+      titleColor: axisColor,
+      bodyColor: axisColor,
+      footerColor: axisColor,
+    };
+
+    // Some parts look at chart.options.color.
+    (chart.options as any).color = axisColor;
+
+    // scales (x/y)
+    const scales = chart.options.scales as any;
+    if (scales?.x) {
+      scales.x.ticks = { ...(scales.x.ticks ?? {}), color: axisColor, font: { ...(scales.x.ticks?.font ?? {}) } };
+      scales.x.title = { ...(scales.x.title ?? {}), color: axisColor };
+      scales.x.grid = { ...(scales.x.grid ?? {}), color: gridColor };
+    }
+    if (scales?.y) {
+      scales.y.ticks = { ...(scales.y.ticks ?? {}), color: axisColor, font: { ...(scales.y.ticks?.font ?? {}) } };
+      scales.y.title = { ...(scales.y.title ?? {}), color: axisColor };
+      scales.y.grid = { ...(scales.y.grid ?? {}), color: gridColor };
+    }
+
+    // plugins
+    const plugins = chart.options.plugins as any;
+    if (plugins?.title) {
+      plugins.title.color = axisColor;
+    }
+    if (plugins?.tooltip) {
+      plugins.tooltip.titleColor = axisColor;
+      plugins.tooltip.bodyColor = axisColor;
+      plugins.tooltip.footerColor = axisColor;
+    }
+
+    chart.update();
   }
 
   /**
@@ -247,6 +316,15 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     const canvas = this.chartCanvas?.nativeElement;
     if (!canvas) return;
 
+    const isDarkMode = typeof document !== 'undefined' && document.body.classList.contains('dark-mode');
+    const axisColor = isDarkMode ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.7)';
+    const gridColor = isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+
+    // Chart.js nutzt an einigen Stellen Default-Farben (z.B. wenn Themes/Adapter greifen).
+    // Darum setzen wir die Defaults beim Rendern explizit passend zum aktuellen Mode.
+    Chart.defaults.color = axisColor;
+    Chart.defaults.borderColor = gridColor;
+
     const parent = canvas.parentElement as HTMLElement | null;
     const w = parent?.clientWidth ?? canvas.clientWidth;
     const h = parent?.clientHeight ?? canvas.clientHeight;
@@ -304,6 +382,12 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
             text: details.station?.name
               ? `${details.station.name} (${details.station.id})`
               : `Station ${this.stationId ?? ''}`,
+            color: axisColor,
+          },
+          tooltip: {
+            titleColor: axisColor,
+            bodyColor: axisColor,
+            footerColor: axisColor,
           },
         },
         elements: {
@@ -311,14 +395,25 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
           point: { radius: 2 },
         },
         scales: {
-          y: { title: { display: true, text: '°C' } },
-          x: { title: { display: true, text: 'Jahr' } },
+          y: {
+            title: { display: true, text: '°C', color: axisColor },
+            ticks: { color: axisColor },
+            grid: { color: gridColor },
+          },
+          x: {
+            title: { display: true, text: 'Jahr', color: axisColor },
+            ticks: { color: axisColor },
+            grid: { color: gridColor },
+          },
         },
       },
     };
 
     try {
       this.chart = new Chart(canvas, cfg);
+
+      // Falls unmittelbar nach Rendern der Darkmode toggled wurde, Theme sicher anwenden.
+      this.applyChartTheme();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('[chart] render failed', e);
