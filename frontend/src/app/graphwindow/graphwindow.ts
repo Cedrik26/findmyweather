@@ -170,12 +170,17 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
     const isDarkMode = typeof document !== 'undefined' && document.body.classList.contains('dark-mode');
     const axisColor = isDarkMode ? 'rgba(255,255,255,0.92)' : 'rgba(0,0,0,0.7)';
     const gridColor = isDarkMode ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+    const tooltipBg = isDarkMode ? 'rgba(34, 34, 34, 0.92)' : '#ffffff';
+    const tooltipBorder = isDarkMode ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.12)';
 
     // Global defaults (Chart.js fallback)
     Chart.defaults.color = axisColor;
     Chart.defaults.borderColor = gridColor;
     (Chart.defaults.plugins as any).tooltip = {
       ...((Chart.defaults.plugins as any).tooltip ?? {}),
+      backgroundColor: tooltipBg,
+      borderColor: tooltipBorder,
+      borderWidth: 1,
       titleColor: axisColor,
       bodyColor: axisColor,
       footerColor: axisColor,
@@ -203,6 +208,9 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
       plugins.title.color = axisColor;
     }
     if (plugins?.tooltip) {
+      plugins.tooltip.backgroundColor = tooltipBg;
+      plugins.tooltip.borderColor = tooltipBorder;
+      plugins.tooltip.borderWidth = 1;
       plugins.tooltip.titleColor = axisColor;
       plugins.tooltip.bodyColor = axisColor;
       plugins.tooltip.footerColor = axisColor;

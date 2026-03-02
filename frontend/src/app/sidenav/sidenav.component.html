@@ -3,12 +3,12 @@
 
   <div class="form">
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Latitude</mat-label>
+      <mat-label>Breitengrad</mat-label>
       <input matInput [(ngModel)]="latitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label>Longitude</mat-label>
+      <mat-label>Längengrad</mat-label>
       <input matInput [(ngModel)]="longitudeValue" (ngModelChange)="onCoordinatesInputChange()" />
     </mat-form-field>
 
@@ -18,13 +18,15 @@
         <div class="label" style="margin: 0;">Radius</div>
         <div class="hint" style="margin: 0;">{{ radius }} km</div>
       </div>
-      <mat-slider min="1" max="100" step="1" showTickMarks>
-        <input
-          matSliderThumb
-          [(ngModel)]="radius"
-          name="radius"
-          (ngModelChange)="onRadiusChange($event)" />
-      </mat-slider>
+      <div class="sliderWrap">
+        <mat-slider min="1" max="100" step="1" showTickMarks>
+          <input
+            matSliderThumb
+            [(ngModel)]="radius"
+            name="radius"
+            (ngModelChange)="onRadiusChange($event)" />
+        </mat-slider>
+      </div>
     </div>
 
     <!-- Weather stations: select all toggle + optional count slider -->
@@ -39,13 +41,15 @@
 
       <ng-container *ngIf="!selectAllStations">
         <div class="label" style="margin-top: 10px;">Anzahl Wetterstationen: {{ weatherStationCount }}</div>
-        <mat-slider min="1" max="10" step="1" showTickMarks>
-          <input matSliderThumb [(ngModel)]="weatherStationCount" name="weatherStationCount" />
-        </mat-slider>
+        <div class="sliderWrap">
+          <mat-slider min="1" max="10" step="1" showTickMarks>
+            <input matSliderThumb [(ngModel)]="weatherStationCount" name="weatherStationCount" />
+          </mat-slider>
+        </div>
       </ng-container>
     </div>
 
-    <!-- Year-only Picker: zwei Felder nebeneinander -->
+    <!-- Year-only Picker: two fields side by side -->
     <div class="block">
       <div class="yearRow">
         <mat-form-field appearance="outline" subscriptSizing="dynamic">
@@ -71,17 +75,7 @@
         </mat-form-field>
       </div>
     </div>
-<!--
-    <div class="block">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>Select Weather station</mat-label>
-        <mat-select [(ngModel)]="stationCount">
-          <mat-option *ngFor="let opt of stationOptions" [value]="opt">{{ opt }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
 
--->
     <button
       class="cta"
       mat-flat-button
@@ -89,10 +83,10 @@
       type="button"
       (click)="lookupWeatherStations()"
       [disabled]="!startYear || !endYear">
-      lookup weather stations
+      Wetterstationen suchen
     </button>
 
-    <!-- Darkmode Switch unten rechts -->
+    <!-- Dark mode switch bottom right -->
     <div class="darkmodeRow">
       <span class="darkmodeLabel">Normal</span>
       <mat-slide-toggle
@@ -100,7 +94,7 @@
         name="darkMode"
         aria-label="Darkmode umschalten"
         (ngModelChange)="onDarkModeToggle($event)">
-        Dark
+        Dunkel
       </mat-slide-toggle>
     </div>
   </div>
