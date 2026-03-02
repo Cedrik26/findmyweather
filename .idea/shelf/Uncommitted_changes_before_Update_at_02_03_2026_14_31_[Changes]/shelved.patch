@@ -1,0 +1,106 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"2964ed0c-8658-4829-a4da-79aef5f03374\" name=\"Changes\" comment=\"darkmode\">\r\n      <change beforePath=\"$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"CopilotPersistence\">\r\n    <persistenceIdMap>\r\n      <entry key=\"_/Users/cedrik/IdeaProjects/findmyweather3\" value=\"38yflLU7v45kwplcT9N7VD0211T\" />\r\n    </persistenceIdMap>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"graph_window\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;Cedrik26&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/Cedrik26/findmyweather.git&quot;,\r\n    &quot;accountId&quot;: &quot;95c2bc66-f236-40d8-ad5d-766070c416b5&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 8\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"38yflLU7v45kwplcT9N7VD0211T\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;JavaScript Debug.app.html.executor&quot;: &quot;Run&quot;,\r\n    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,\r\n    &quot;Node.js.weather-station-layer.models.ts.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,\r\n    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,\r\n    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"$PROJECT_DIR$/frontend/public\" />\r\n      <recent name=\"$PROJECT_DIR$\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"2964ed0c-8658-4829-a4da-79aef5f03374\" name=\"Changes\" comment=\"\" />\r\n      <created>1769776881396</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1769776881396</updated>\r\n      <workItem from=\"1769776882585\" duration=\"12284000\" />\r\n      <workItem from=\"1769803064563\" duration=\"1591000\" />\r\n      <workItem from=\"1770192274493\" duration=\"5444000\" />\r\n      <workItem from=\"1770646239101\" duration=\"1362000\" />\r\n      <workItem from=\"1770724892977\" duration=\"6834000\" />\r\n      <workItem from=\"1772006516465\" duration=\"92000\" />\r\n      <workItem from=\"1772006614841\" duration=\"7025000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"j\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769776929226</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769776929226</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"fixen\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769777102234</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769777102234</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"gefixt\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769777277086</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769777277086</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"feature search weather stations\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769780000745</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769780000745</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"feature graph\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769785474595</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769785474595</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"fixes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769801292747</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769801292747</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"fixes\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1769804569011</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1769804569011</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"ladebalken hinzugefügt\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770194202851</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770194202851</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"layout graph 30% 70%\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770197792451</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770197792451</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"layout graph 30% 70%\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770197883890</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770197883890</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"fix\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770198823459</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770198823459</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"graph farben angepasst\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770821830430</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770821830430</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"tabelle passt sich dynamisch an\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770822478292</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770822478292</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00014\" summary=\"tabelle passt sich dynamisch an\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770823467450</created>\r\n      <option name=\"number\" value=\"00014\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770823467450</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00015\" summary=\"tabelle passt sich dynamisch an\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770823989554</created>\r\n      <option name=\"number\" value=\"00015\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770823989554</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00016\" summary=\"tabelle passt sich dynamisch an\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770824098247</created>\r\n      <option name=\"number\" value=\"00016\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770824098247</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00017\" summary=\"jahr angepast\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1770824658947</created>\r\n      <option name=\"number\" value=\"00017\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1770824658947</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00018\" summary=\"darkmode\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1772014749577</created>\r\n      <option name=\"number\" value=\"00018\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00018\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1772014749577</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"19\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"OPEN_GENERIC_TABS\">\r\n      <map>\r\n        <entry key=\"13ca4e7a-6b62-475a-a145-e352234ce550\" value=\"TOOL_WINDOW\" />\r\n        <entry key=\"d495b5a8-f0a1-477d-bb2e-e6a424d38342\" value=\"TOOL_WINDOW\" />\r\n        <entry key=\"181cf97f-7d1b-4dea-abbe-e805e5de2b84\" value=\"TOOL_WINDOW\" />\r\n        <entry key=\"8d70ddf9-01b2-46c8-b418-4162bf938b4a\" value=\"TOOL_WINDOW\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"13ca4e7a-6b62-475a-a145-e352234ce550\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n        <entry key=\"181cf97f-7d1b-4dea-abbe-e805e5de2b84\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n        <entry key=\"8d70ddf9-01b2-46c8-b418-4162bf938b4a\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n        <entry key=\"d495b5a8-f0a1-477d-bb2e-e6a424d38342\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"j\" />\r\n    <MESSAGE value=\"fixen\" />\r\n    <MESSAGE value=\"gefixt\" />\r\n    <MESSAGE value=\"feature search weather stations\" />\r\n    <MESSAGE value=\"feature graph\" />\r\n    <MESSAGE value=\"fixes\" />\r\n    <MESSAGE value=\"ladebalken hinzugefügt\" />\r\n    <MESSAGE value=\"layout graph 30% 70%\" />\r\n    <MESSAGE value=\"h\" />\r\n    <MESSAGE value=\"fix\" />\r\n    <MESSAGE value=\"graph farben angepasst\" />\r\n    <MESSAGE value=\"tabelle passt sich dynamisch an\" />\r\n    <MESSAGE value=\"jahr angepast\" />\r\n    <MESSAGE value=\"darkmode\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"darkmode\" />\r\n  </component>\r\n  <component name=\"github-copilot-workspace\">\r\n    <instructionFileLocations>\r\n      <option value=\".github/instructions\" />\r\n    </instructionFileLocations>\r\n    <promptFileLocations>\r\n      <option value=\".github/prompts\" />\r\n    </promptFileLocations>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision d0f28462efbbf8067cc7f2a64c09ce8e2f4ca5fd)
++++ b/.idea/workspace.xml	(date 1772458039503)
+@@ -1,9 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="darkmode">
+-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" afterDir="false" />
+-    </list>
++    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="darkmode" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -28,12 +26,12 @@
+     &quot;assignee&quot;: &quot;Cedrik26&quot;
+   }
+ }</component>
+-  <component name="GithubPullRequestsUISettings">{
+-  &quot;selectedUrlAndAccountId&quot;: {
+-    &quot;url&quot;: &quot;https://github.com/Cedrik26/findmyweather.git&quot;,
+-    &quot;accountId&quot;: &quot;95c2bc66-f236-40d8-ad5d-766070c416b5&quot;
+-  }
+-}</component>
++  <component name="GithubPullRequestsUISettings"><![CDATA[{
++  "selectedUrlAndAccountId": {
++    "url": "https://github.com/Cedrik26/findmyweather.git",
++    "accountId": "be34bf44-13b3-4862-8f6d-756df5721d76"
++  }
++}]]></component>
+   <component name="KubernetesApiPersistence">{}</component>
+   <component name="KubernetesApiProvider">{
+   &quot;isMigrated&quot;: true
+@@ -49,24 +47,25 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;JavaScript Debug.app.html.executor&quot;: &quot;Run&quot;,
+-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+-    &quot;Node.js.weather-station-layer.models.ts.executor&quot;: &quot;Run&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+-    &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "JavaScript Debug.app.html.executor": "Run",
++    "ModuleVcsDetector.initialDetectionPerformed": "true",
++    "Node.js.weather-station-layer.models.ts.executor": "Run",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
++    "dart.analysis.tool.window.visible": "false",
++    "git-widget-placeholder": "main",
++    "ignore.virus.scanning.warn.message": "true",
++    "kotlin-language-version-configured": "true",
++    "nodejs_package_manager_path": "npm",
++    "show.migrate.to.gradle.popup": "false",
++    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="$PROJECT_DIR$/frontend/public" />
+@@ -76,11 +75,12 @@
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+-        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
+-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.240" />
++        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
++        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+       </set>
+     </attachedChunks>
+   </component>
++  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">
+       <changelist id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="" />
+@@ -95,6 +95,7 @@
+       <workItem from="1770724892977" duration="6834000" />
+       <workItem from="1772006516465" duration="92000" />
+       <workItem from="1772006614841" duration="7025000" />
++      <workItem from="1772457986604" duration="53000" />
+     </task>
+     <task id="LOCAL-00001" summary="j">
+       <option name="closed" value="true" />

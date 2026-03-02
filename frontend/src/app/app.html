@@ -1,6 +1,12 @@
 <!-- Fullscreen OpenStreetMap background -->
 <div #map class="map" aria-hidden="true"></div>
 
+<!-- LCP-friendly placeholder over the map (shown until first tiles loaded) -->
+<div class="mapPlaceholder" *ngIf="mapLoading" aria-hidden="true">
+  <div class="mapPlaceholder__skeleton"></div>
+  <div class="mapPlaceholder__hint">Karte wird geladen…</div>
+</div>
+
 <!-- Logo overlay (oben links) -->
 <a class="logo" href="/" aria-label="FindMyWeather">
   <img src="/logo.png" alt="FindMyWeather Logo" />
