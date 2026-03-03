@@ -193,7 +193,8 @@ router.get(
                 startYear,
                 endYear,
                 metrics as MetricType[],
-                true  // Include seasonal data
+                true,  // Include seasonal data
+                station.lat
             );
 
             // Cache result

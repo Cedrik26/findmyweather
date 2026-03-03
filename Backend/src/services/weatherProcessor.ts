@@ -27,21 +27,8 @@ const SEASONS: SeasonRange[] = [
     { name: 'spring', startMonth: 3, endMonth: 5 },    // März - Mai
     { name: 'summer', startMonth: 6, endMonth: 8 },    // Juni - August
     { name: 'fall', startMonth: 9, endMonth: 11 },     // September - November
-    { name: 'winter', startMonth: 12, endMonth: 2 }    // Dezember - Februar (crosses year)
+    { name: 'winter', startMonth: 12, endMonth: 2 }    // Dezember - Februar
 ];
-
-// Chart.js colors for different metrics
-const METRIC_COLORS: Record<MetricType, { border: string; background: string }> = {
-    TMAX: { border: 'rgb(255, 99, 132)', background: 'rgba(255, 99, 132, 0.2)' },
-    TMIN: { border: 'rgb(54, 162, 235)', background: 'rgba(54, 162, 235, 0.2)' }
-};
-
-const SEASON_COLORS: Record<keyof SeasonalData, { border: string; background: string }> = {
-    spring: { border: 'rgb(75, 192, 75)', background: 'rgba(75, 192, 75, 0.2)' },
-    summer: { border: 'rgb(255, 159, 64)', background: 'rgba(255, 159, 64, 0.2)' },
-    fall: { border: 'rgb(153, 102, 51)', background: 'rgba(153, 102, 51, 0.2)' },
-    winter: { border: 'rgb(54, 162, 235)', background: 'rgba(54, 162, 235, 0.2)' }
-};
 
 // ==========================================
 // Helper Functions
@@ -73,11 +60,15 @@ function calculateAverage(values: number[]): number | null {
 /**
  * Gets the season for a given month
  */
-function getSeasonForMonth(month: number): keyof SeasonalData {
-    if (month >= 3 && month <= 5) return 'spring';
-    if (month >= 6 && month <= 8) return 'summer';
-    if (month >= 9 && month <= 11) return 'fall';
-    return 'winter'; // December, January, February
+function getSeasonForMonth(month: number, latitude: number): keyof SeasonalData {
+    const isNorth = latitude >= 0;
+
+    if (month >= 3 && month <= 5) return isNorth ? 'spring' : 'fall';
+    if (month >= 6 && month <= 8) return isNorth ? 'summer' : 'winter';
+    if (month >= 9 && month <= 11) return isNorth ? 'fall' : 'spring';
+
+    // Monat 12, 1, 2
+    return isNorth ? 'winter' : 'summer';
 }
 
 /**
@@ -129,7 +120,8 @@ export function calculateAnnualAverage(observations: DailyObservation[]): number
  */
 export function calculateSeasonalAverages(
     observations: DailyObservation[],
-    year: number
+    year: number,
+    latitude: number
 ): SeasonalData {
     const seasonalData: SeasonalData = {
         spring: null,
@@ -151,7 +143,7 @@ export function calculateSeasonalAverages(
 
         const month = getMonth(obs.date);
         const obsYear = getYear(obs.date);
-        const season = getSeasonForMonth(month);
+        const season = getSeasonForMonth(month, latitude);
 
         // Handle winter specially (crosses year boundary)
         if (season === 'winter') {
@@ -180,7 +172,8 @@ export function processWeatherData(
     observations: DailyObservation[],
     startYear: number,
     endYear: number,
-    metric: MetricType
+    metric: MetricType,
+    latitude: number
 ): YearlyWeatherData[] {
     // Filter by metric
     const filteredObs = observations.filter(obs => obs.element === metric);
@@ -204,7 +197,7 @@ export function processWeatherData(
         results.push({
             year,
             annualAvg: calculateAnnualAverage(yearObs),
-            seasons: calculateSeasonalAverages(extendedObs, year)
+            seasons: calculateSeasonalAverages(extendedObs, year, latitude)
         });
     }
 
@@ -223,14 +216,9 @@ export function formatForChartJS(
     const datasets: ChartJSDatasetEntry[] = [];
 
     // Annual average dataset
-    const colors = METRIC_COLORS[metric];
     datasets.push({
         label: `${metric} Jahresdurchschnitt`,
         data: yearlyData.map(d => d.annualAvg),
-        borderColor: colors.border,
-        backgroundColor: colors.background,
-        tension: 0.1,
-        fill: false
     });
 
     // Seasonal datasets (optional)
@@ -244,14 +232,9 @@ export function formatForChartJS(
         };
 
         for (const season of seasonNames) {
-            const sColors = SEASON_COLORS[season];
             datasets.push({
                 label: `${metric} ${seasonLabels[season]}`,
                 data: yearlyData.map(d => d.seasons[season]),
-                borderColor: sColors.border,
-                backgroundColor: sColors.background,
-                tension: 0.1,
-                fill: false
             });
         }
     }
@@ -267,7 +250,8 @@ export function combineMetricsForChartJS(
     startYear: number,
     endYear: number,
     metrics: MetricType[],
-    includeSeasons: boolean = false
+    includeSeasons: boolean = false,
+    latitude: number
 ): ChartJSDataset {
     const labels: number[] = [];
     const datasets: ChartJSDatasetEntry[] = [];
@@ -278,7 +262,7 @@ export function combineMetricsForChartJS(
     }
 
     for (const metric of metrics) {
-        const yearlyData = processWeatherData(observations, startYear, endYear, metric);
+        const yearlyData = processWeatherData(observations, startYear, endYear, metric, latitude);
         const chartData = formatForChartJS(yearlyData, metric, includeSeasons);
         datasets.push(...chartData.datasets);
     }

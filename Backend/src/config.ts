@@ -18,7 +18,7 @@ export const config = {
         maxRadius: 500,        // km
         maxStations: 100,
         defaultRadius: 50,     // km
-        defaultMaxStations: 10
+        defaultMaxStations: 100
     },
 
     validation: {
