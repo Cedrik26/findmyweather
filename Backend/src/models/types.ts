@@ -57,10 +57,10 @@ export interface ChartJSDataset {
 export interface ChartJSDatasetEntry {
     label: string;
     data: (number | null)[];
-    borderColor?: string;
-    backgroundColor?: string;
-    tension?: number;
-    fill?: boolean;
+    // borderColor?: string;
+    // backgroundColor?: string;
+    // tension?: number;
+    // fill?: boolean;
 }
 
 // ==========================================
