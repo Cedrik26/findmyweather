@@ -194,3 +194,35 @@ body.dark-mode app-graphwindow .chartWrap,
 body.dark-mode app-graphwindow .chartLegend {
   border-color: rgba(255, 255, 255, 0.35) !important;
 }
+
+// ------------------------------------------------------------
+// Graphwindow Datentabelle: klare Zell-/Spaltenränder (Light + Dark)
+// (nur Ränder, keine Spaltenbreiten-/Layout-Anpassungen)
+// ------------------------------------------------------------
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  // Wichtig: kein table-layout: fixed; sonst können Spaltenbreiten/Umbrüche unerwünscht sein
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 6px 8px;
+  vertical-align: top;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.dataTable thead th {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.22);
+}
+
+// Darkmode: alle Zellränder hellgrau (inkl. vertikale Spaltentrenner)
+body.dark-mode .dataTable th,
+body.dark-mode .dataTable td {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+body.dark-mode .dataTable thead th {
+  border-bottom-color: rgba(255, 255, 255, 0.28) !important;
+}
