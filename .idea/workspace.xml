@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="spaltenlinien in tabelle hinzugefügt">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.ts" beforeDir="false" />
-    </list>
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="dateinamen angepasst" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,7 +105,7 @@
       <workItem from="1772006516465" duration="92000" />
       <workItem from="1772006614841" duration="7025000" />
       <workItem from="1772196567043" duration="4281000" />
-      <workItem from="1772532171033" duration="916000" />
+      <workItem from="1772532171033" duration="1279000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -275,7 +267,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772532506851</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="dateinamen angepasst">
+      <option name="closed" value="true" />
+      <created>1772533334075</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1772533334075</updated>
+    </task>
+    <task id="LOCAL-00022" summary="dateinamen angepasst">
+      <option name="closed" value="true" />
+      <created>1772533389886</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1772533389886</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -336,7 +344,8 @@
     <MESSAGE value="jahr angepast" />
     <MESSAGE value="darkmode" />
     <MESSAGE value="spaltenlinien in tabelle hinzugefügt" />
-    <option name="LAST_COMMIT_MESSAGE" value="spaltenlinien in tabelle hinzugefügt" />
+    <MESSAGE value="dateinamen angepasst" />
+    <option name="LAST_COMMIT_MESSAGE" value="dateinamen angepasst" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

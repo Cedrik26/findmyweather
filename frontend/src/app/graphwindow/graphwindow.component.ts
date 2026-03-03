@@ -552,12 +552,7 @@ function buildDatasetToggles(details: WeatherStationDetails): DatasetToggle[] {
   });
 }
 
-/**
- * Farbschema:
- * - Tmax Jahresdurchschnitt → #FF0000
- * - Tmin Jahresdurchschnitt → #0000FF
- * - Saisonale Durchschnitte → Pastell; Tmin dunkler als Tmax
- */
+
 function getColor(label: string | undefined, idx: number): string {
   const fallbackPalette = ['#1976d2', '#d32f2f', '#388e3c', '#f57c00', '#7b1fa2', '#00796b'];
   const fallback = fallbackPalette[idx % fallbackPalette.length]!;

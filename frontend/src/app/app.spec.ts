@@ -159,16 +159,12 @@ describe('App', () => {
     const handler = registerCall[0] as (id: string) => void;
     handler('ST99');
 
-    // WICHTIG: onLookupGraphForStation schiebt State-Update in eine Microtask.
-    // Darum einmal auf den Microtask-Queue warten.
-    await new Promise<void>((r) => queueMicrotask(r));
+    // WICHTIG: onLookupGraphForStation nutzt setTimeout(0).
+    // Darum einmal auf den Timer-Tick warten.
+    await new Promise<void>((r) => setTimeout(r, 0));
 
     await fixture.whenStable();
-    try {
-      fixture.detectChanges();
-    } catch (e) {
-      /* ignore NG0100 */
-    }
+    fixture.detectChanges();
 
     expect(component.showGraph).toBe(true);
     expect(component.selectedStationId).toBe('ST99');
