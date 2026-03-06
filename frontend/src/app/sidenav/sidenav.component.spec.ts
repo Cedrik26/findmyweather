@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SidenavComponent } from './sidenav.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
+import { DateAdapter } from '@angular/material/core';
 
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
@@ -226,5 +227,39 @@ describe('SidenavComponent', () => {
     component.lookupWeatherStations();
 
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('YearOnlyDateAdapter (DateAdapter) should parse years correctly (and reject invalid)', () => {
+    // Adapter kommt aus den Component-Providern
+    const adapter = TestBed.inject(DateAdapter) as any;
+    const parseFn = adapter.parse?.bind(adapter);
+
+    // parse valid
+    const d = parseFn('2026', 'YYYY') as Date;
+    expect(d).toBeInstanceOf(Date);
+    expect(d.getFullYear()).toBe(2026);
+
+    const expectInvalid = (v: any) => {
+      // je nach Adapter-Impl: null oder Invalid Date
+      if (v === null) return;
+      expect(v).toBeInstanceOf(Date);
+      expect(Number.isNaN((v as Date).getTime())).toBe(true);
+    };
+
+    // parse invalid values (universell invalid)
+    expectInvalid(parseFn('', 'YYYY'));
+    expectInvalid(parseFn('   ', 'YYYY'));
+    expectInvalid(parseFn('abc', 'YYYY'));
+  });
+
+  it('setEndYear should set endYear directly when endYear >= startYear (else-branch)', () => {
+    component.startYear = new Date(2020, 0, 1);
+
+    const picker = { close: vi.fn() } as any;
+    component.setEndYear(new Date(2022, 0, 1), picker);
+
+    expect(component.startYear?.getFullYear()).toBe(2020);
+    expect(component.endYear?.getFullYear()).toBe(2022);
+    expect(picker.close).toHaveBeenCalled();
   });
 });

@@ -413,3 +413,68 @@ describe('Graphwindow (additional coverage 2)', () => {
     expect(scheduleSpy).toHaveBeenCalled();
   });
 });
+
+describe('Graphwindow helpers (via test hooks)', () => {
+  it('should detect metrics and strip metric prefixes', () => {
+    const hooks = (globalThis as any).__graphwindowTestHooks__;
+    expect(hooks).toBeTruthy();
+
+    expect(hooks.detectMetricFromLabel('TMIN Sommer')).toBe('TMIN');
+    expect(hooks.detectMetricFromLabel('tmax winter')).toBe('TMAX');
+    expect(hooks.detectMetricFromLabel('something else')).toBe('OTHER');
+
+    expect(hooks.stripMetricPrefix('TMIN Jahresdurchschnitt', 'TMIN')).toBe('Jahresdurchschnitt');
+    expect(hooks.stripMetricPrefix('TMAX Sommer', 'TMAX')).toBe('Sommer');
+    expect(hooks.stripMetricPrefix('  ', 'OTHER')).toBe('');
+  });
+
+  it('should compute default visibility and colors for seasons + fallback', () => {
+    const hooks = (globalThis as any).__graphwindowTestHooks__;
+
+    expect(hooks.isDefaultVisible('TMIN Jahresdurchschnitt')).toBe(true);
+    expect(hooks.isDefaultVisible('TMIN Sommer')).toBe(false);
+
+    // Jahresdurchschnitt colors
+    expect(hooks.getColor('TMAX Jahresdurchschnitt', 0)).toBe('#FF0000');
+    expect(hooks.getColor('TMIN Jahresdurchschnitt', 0)).toBe('#0000FF');
+
+    // Seasons colors
+    expect(hooks.getColor('TMAX Winter', 0)).toBe('#9de3ec');
+    expect(hooks.getColor('TMIN Winter', 0)).toBe('#4583b8');
+    expect(hooks.getColor('TMAX Frühling', 0)).toBe('#98FB98');
+    expect(hooks.getColor('TMIN Fruehling', 0)).toBe('#228B22');
+    expect(hooks.getColor('TMAX Sommer', 0)).toBe('#d1d166');
+    expect(hooks.getColor('TMIN Sommer', 0)).toBe('#ffd700');
+    expect(hooks.getColor('TMAX Herbst', 0)).toBe('#ff82ab');
+    expect(hooks.getColor('TMIN Herbst', 0)).toBe('#ff1493');
+
+    // fallback when label missing
+    expect(hooks.getColor(undefined, 1)).toBeTruthy();
+  });
+
+  it('buildDatasetToggles should create toggles with displayLabel + metric + default visibility', () => {
+    const hooks = (globalThis as any).__graphwindowTestHooks__;
+
+    const details: any = {
+      station: null,
+      labels: ['2000'],
+      datasets: [
+        { label: 'TMIN Jahresdurchschnitt', data: [1] },
+        { label: 'TMAX Sommer', data: [2] },
+      ],
+    };
+
+    const toggles = hooks.buildDatasetToggles(details);
+    expect(toggles).toHaveLength(2);
+
+    expect(toggles[0].metric).toBe('TMIN');
+    expect(toggles[0].displayLabel).toBe('Jahresdurchschnitt');
+    expect(toggles[0].visible).toBe(true);
+    expect(toggles[0].color).toBe('#0000FF');
+
+    expect(toggles[1].metric).toBe('TMAX');
+    expect(toggles[1].displayLabel).toBe('Sommer');
+    expect(toggles[1].visible).toBe(false);
+    expect(toggles[1].color).toBe('#d1d166');
+  });
+});

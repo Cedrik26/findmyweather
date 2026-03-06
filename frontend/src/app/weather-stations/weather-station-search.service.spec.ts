@@ -3,12 +3,7 @@ import { WeatherStationSearchService } from './weather-station-search.service';
 import { WeatherStationRepositoryService } from './weather-station-repository.service';
 import { of } from 'rxjs';
 
-/**
- * Zustzliche Unit-Tests fr die Search-Facade.
- *
- * Ziel: Coverage fr `weather-station-search.service.ts` von ~0% Funktionen
- * nach oben bringen.
- */
+
 describe('WeatherStationSearchService', () => {
   let repoSpy: { searchStations: any };
   let svc: WeatherStationSearchService;

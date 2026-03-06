@@ -466,6 +466,18 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
   }
 }
 
+// Test-Hook: macht interne Helper-Funktionen für Unit-Tests erreichbar, ohne Public API des Components zu verändern.
+// In Production hat das keine Seiteneffekte (nur ein globaler Property-Write).
+if (typeof globalThis !== 'undefined') {
+  (globalThis as any).__graphwindowTestHooks__ = {
+    detectMetricFromLabel,
+    stripMetricPrefix,
+    isDefaultVisible,
+    getColor,
+    buildDatasetToggles,
+  };
+}
+
 function valAt(arr: number[], idx: number): number | null {
   const v = arr?.[idx];
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
