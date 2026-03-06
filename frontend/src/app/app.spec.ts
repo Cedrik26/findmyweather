@@ -238,4 +238,26 @@ describe('App', () => {
         limit: 10
     }));
   });
+
+  it('FE24: (Integration) should set noStationsFound=true when stations response is empty', async () => {
+    // @ts-expect-error access internal mocked backend
+    window.__mockStationsResponse = [];
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    component.onLookupStations({
+      latitude: 48.3,
+      longitude: 10.9,
+      radiusKm: 50,
+      startYear: 2020,
+      endYear: 2021,
+      selectAllStations: true,
+      limit: null,
+    } as any);
+
+    // flush async
+    await new Promise((r) => setTimeout(r, 0));
+    expect((component as any).noStationsFound).toBe(true);
+  });
 });

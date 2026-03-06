@@ -104,6 +104,9 @@ export class SidenavComponent implements OnChanges {
   /** Longitude input from parent (for two-way binding or initial set). */
   @Input() longitude = '';
 
+  /** True, wenn die letzte Suche keine Wetterstationen geliefert hat. */
+  @Input() noStationsFound = false;
+
   /** Internal value for latitude input field. */
   latitudeValue = '';
 
