@@ -11,6 +11,7 @@ import {
   AfterViewInit,
   NgZone,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -22,6 +23,10 @@ import { Subscription } from 'rxjs';
 
 import { WeatherStationRepositoryService } from '../weather-stations/weather-station-repository.service';
 import { WeatherStationDetails } from '../weather-stations/weather-station.models';
+
+// Vitest/Vite: inline templates/styles vermeiden Probleme mit templateUrl/styleUrl.
+import graphTemplate from './graphwindow.component.html?raw';
+import graphStyles from './graphwindow.component.css?raw';
 
 type TableRow = {
   label: string;
@@ -49,8 +54,8 @@ type DatasetToggle = {
   selector: 'app-graphwindow',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule, MatCheckboxModule],
-  templateUrl: './graphwindow.component.html',
-  styleUrl: './graphwindow.component.css',
+  template: graphTemplate,
+  styles: [graphStyles],
 })
 /**
  * Component responsible for displaying detailed weather station data.
@@ -112,11 +117,9 @@ export class Graphwindow implements OnChanges, OnDestroy, AfterViewInit {
 
   private darkModeObserver?: MutationObserver;
 
-  constructor(
-    private readonly repo: WeatherStationRepositoryService,
-    private readonly ngZone: NgZone,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+  private readonly repo = inject(WeatherStationRepositoryService);
+  private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   /**
    * Reloads data whenever inputs change.

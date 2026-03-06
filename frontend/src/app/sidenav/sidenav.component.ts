@@ -16,6 +16,10 @@ import {
 } from '@angular/material/core';
 import { WeatherStationQuery } from '../weather-stations/weather-station.models';
 
+// Vitest/Vite: inline templates/styles vermeiden Probleme mit templateUrl/styleUrl.
+import sidenavTemplate from './sidenav.component.html?raw';
+import sidenavStyles from './sidenav.component.css?raw';
+
 @Injectable()
 /**
  * Custom DateAdapter that handles only years.
@@ -82,8 +86,8 @@ const YEAR_ONLY_DATE_FORMATS = {
     MatDatepickerModule,
     MatNativeDateModule,
   ],
-  templateUrl: './sidenav.component.html',
-  styleUrl: './sidenav.component.css',
+  template: sidenavTemplate,
+  styles: [sidenavStyles],
 })
 /**
  * Main side navigation component for weather station search control.

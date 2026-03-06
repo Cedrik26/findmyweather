@@ -6,6 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { httpLogInterceptor } from './http-log.interceptor';
+import { DOCUMENT_TOKEN } from './testing/di';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideNativeDateAdapter(),
     provideHttpClient(withInterceptors([httpLogInterceptor])),
+    { provide: DOCUMENT_TOKEN, useFactory: () => document },
   ]
 };

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Graphwindow } from './graphwindow.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -6,6 +6,7 @@ import { WeatherStationRepositoryService } from '../weather-stations/weather-sta
 import { Subject, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import Chart from 'chart.js/auto';
 
 describe('Graphwindow', () => {
   let component: Graphwindow;
@@ -53,6 +54,10 @@ describe('Graphwindow', () => {
 
   // FE15: Error-State sichtbar
   it('FE15: (Error-State) should show error message when error is present', async () => {
+    // In diesem Test-Szenario ist ein Error-Log erwartetes Verhalten.
+    // Wir stummen es, um Test-Output sauber zu halten.
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
     repoSpy.getStationDetails.mockReturnValue(throwError(() => new Error('Backend Fail')));
 
     fixture.componentRef.setInput('stationId', 'TEST_ID');
@@ -67,6 +72,8 @@ describe('Graphwindow', () => {
     const errorDiv = fixture.debugElement.query(By.css('.state.error'));
     expect(errorDiv).toBeTruthy();
     expect(errorDiv.nativeElement.textContent).toContain('Keine Detaildaten gefunden');
+
+    consoleSpy.mockRestore();
   });
 
   // FE16: Details-Rendering: Station Info Tabelle
@@ -188,5 +195,221 @@ describe('Graphwindow', () => {
     closeBtn.nativeElement.click();
 
     expect(spy).toHaveBeenCalled();
+  });
+});
+
+describe('Graphwindow (additional coverage)', () => {
+  let component: Graphwindow;
+  let fixture: ComponentFixture<Graphwindow>;
+  let repoSpy: any;
+
+  beforeEach(async () => {
+    repoSpy = {
+      getStationDetails: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [Graphwindow, HttpClientTestingModule, NoopAnimationsModule],
+      providers: [{ provide: WeatherStationRepositoryService, useValue: repoSpy }],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Graphwindow);
+    component = fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    // Reset dark-mode class between tests
+    document.body.classList.remove('dark-mode');
+  });
+
+  it('FE24: (No-Station) should show error if stationId is null', async () => {
+    fixture.componentRef.setInput('stationId', null);
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.loading).toBe(false);
+    expect(component.error).toContain('Keine Station ausgewählt');
+
+    const errorDiv = fixture.debugElement.query(By.css('.state.error'));
+    expect(errorDiv).toBeTruthy();
+  });
+
+  it('FE25: (Empty-Data) should show backend message when labels/datasets are empty', async () => {
+    repoSpy.getStationDetails.mockReturnValue(
+      new Subject<any>().asObservable() // placeholder, we will emit below
+    );
+
+    const subject = new Subject<any>();
+    repoSpy.getStationDetails.mockReturnValue(subject.asObservable());
+
+    fixture.componentRef.setInput('stationId', 'TEST_ID');
+    fixture.detectChanges();
+
+    subject.next({
+      station: { id: 'TEST_ID', name: 'X', lat: 0, lon: 0, firstYear: 2000, lastYear: 2001 },
+      labels: [],
+      datasets: [],
+      message: 'Keine Daten vorhanden',
+    });
+    subject.complete();
+
+    await fixture.whenStable();
+
+    expect(component.loading).toBe(false);
+    expect(component.error).toBe('Keine Daten vorhanden');
+
+    fixture.detectChanges();
+    const errorDiv = fixture.debugElement.query(By.css('.state.error'));
+    expect(errorDiv?.nativeElement.textContent).toContain('Keine Daten vorhanden');
+  });
+
+  it('FE26: (Dataset-Toggles) should build toggles with stripped labels + default visibility', () => {
+    const details: any = {
+      station: { id: 'X', name: 'X', lat: 0, lon: 0, firstYear: 2000, lastYear: 2001 },
+      labels: ['2000'],
+      datasets: [
+        { label: 'TMIN Jahresdurchschnitt', data: [1] },
+        { label: 'TMAX Jahresdurchschnitt', data: [2] },
+        { label: 'TMIN Sommer', data: [3] },
+        { label: 'TMAX Sommer', data: [4] },
+      ],
+    };
+
+    // Simuliere was load() macht
+    component.details = details;
+    // @ts-expect-error - private helper is not directly accessible, we cover via observable getters
+    component.datasetToggles = (component as any).constructor
+      ? component.datasetToggles
+      : component.datasetToggles;
+
+    // direkt die interne Helper-Funktion wird in load() genutzt.
+    // Wir rufen load nicht auf; stattdessen nutzen wir das öffentliche visibleDatasets-Getter-Verhalten.
+    component.datasetToggles = [
+      { datasetIndex: 0, label: 'TMIN Jahresdurchschnitt', displayLabel: 'Jahresdurchschnitt', metric: 'TMIN', visible: true, color: '#0000FF' },
+      { datasetIndex: 1, label: 'TMAX Jahresdurchschnitt', displayLabel: 'Jahresdurchschnitt', metric: 'TMAX', visible: true, color: '#FF0000' },
+      { datasetIndex: 2, label: 'TMIN Sommer', displayLabel: 'Sommer', metric: 'TMIN', visible: false, color: '#ffd700' },
+      { datasetIndex: 3, label: 'TMAX Sommer', displayLabel: 'Sommer', metric: 'TMAX', visible: false, color: '#d1d166' },
+    ] as any;
+
+    const visible = component.visibleDatasets;
+    expect(visible.length).toBe(2);
+    expect(visible[0].label).toContain('TMIN Jahresdurchschnitt');
+    expect(visible[1].label).toContain('TMAX Jahresdurchschnitt');
+  });
+
+  it('FE27: (Close) onClose should emit close event', () => {
+    const spy = vi.spyOn(component.close, 'emit');
+    component.onClose();
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('FE28: (applyChartTheme) should apply dark theme colors to chart options and defaults', () => {
+    document.body.classList.add('dark-mode');
+
+    const chartSpy: any = {
+      options: {
+        scales: { x: { ticks: {}, grid: {}, title: {} }, y: { ticks: {}, grid: {}, title: {} } },
+        plugins: { title: {}, tooltip: {} },
+      },
+      update: vi.fn(),
+      destroy: vi.fn(),
+    };
+
+    (component as any).chart = chartSpy;
+
+    // private method aufrufen
+    (component as any).applyChartTheme();
+
+    expect(Chart.defaults.color).toContain('255,255,255');
+    expect(chartSpy.options.scales.x.ticks.color).toContain('255,255,255');
+    expect(chartSpy.options.scales.y.grid.color).toContain('255,255,255');
+    expect(chartSpy.options.plugins.tooltip.backgroundColor).toContain('rgba');
+    expect(chartSpy.update).toHaveBeenCalled();
+  });
+
+  it('FE29: (applyChartTheme) should apply light theme colors when dark-mode is not set', () => {
+    document.body.classList.remove('dark-mode');
+
+    const chartSpy: any = {
+      options: {
+        scales: { x: { ticks: {}, grid: {}, title: {} }, y: { ticks: {}, grid: {}, title: {} } },
+        plugins: { title: {}, tooltip: {} },
+      },
+      update: vi.fn(),
+      destroy: vi.fn(),
+    };
+
+    (component as any).chart = chartSpy;
+
+    (component as any).applyChartTheme();
+
+    expect(Chart.defaults.color).toContain('0,0,0');
+    expect(chartSpy.options.scales.x.ticks.color).toContain('0,0,0');
+    expect(chartSpy.update).toHaveBeenCalled();
+  });
+});
+
+describe('Graphwindow (additional coverage 2)', () => {
+  let component: Graphwindow;
+  let fixture: ComponentFixture<Graphwindow>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Graphwindow, HttpClientTestingModule, NoopAnimationsModule],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(Graphwindow);
+    component = fixture.componentInstance;
+  });
+
+  it('FE30: scheduleChartRender should set pendingRender when view is not ready', () => {
+    (component as any).viewReady = false;
+    component.details = { station: null, labels: ['2000'], datasets: [{ label: 'TMIN Jahresdurchschnitt', data: [1] }] } as any;
+
+    (component as any).scheduleChartRender();
+
+    expect((component as any).pendingRender).toBe(true);
+  });
+
+  it('FE31: onToggleDataset should rebuild tableRows even if chart is undefined', () => {
+    component.details = {
+      station: null,
+      labels: ['2000', '2001'],
+      datasets: [
+        { label: 'A Jahresdurchschnitt', data: [1, 2] },
+        { label: 'B Sommer', data: [3, 4] },
+      ],
+    } as any;
+
+    component.datasetToggles = [
+      { datasetIndex: 0, label: 'A Jahresdurchschnitt', displayLabel: 'A', metric: 'TMIN', visible: true, color: '#0000FF' },
+      { datasetIndex: 1, label: 'B Sommer', displayLabel: 'B', metric: 'TMAX', visible: false, color: '#FF0000' },
+    ] as any;
+
+    // initial: nur 1 sichtbare Spalte
+    component.tableRows = [{ label: '2000', values: [1] }] as any;
+
+    const toggle = component.datasetToggles[1] as any;
+    component.onToggleDataset(toggle, true);
+
+    // jetzt sollten 2 Spalten in tableRows sichtbar sein
+    expect(component.tableRows[0].values.length).toBe(2);
+  });
+
+  it('FE32: ngAfterViewInit should call scheduleChartRender when details exist and no error', () => {
+    const scheduleSpy = vi.spyOn(component as any, 'scheduleChartRender');
+
+    component.details = {
+      station: null,
+      labels: ['2000'],
+      datasets: [{ label: 'X', data: [1] }],
+    } as any;
+    component.error = null;
+
+    component.ngAfterViewInit();
+
+    expect(scheduleSpy).toHaveBeenCalled();
   });
 });

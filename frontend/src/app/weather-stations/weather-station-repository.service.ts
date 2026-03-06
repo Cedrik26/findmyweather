@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, forkJoin, map } from 'rxjs';
 import { WeatherStation, WeatherStationDetails, WeatherStationInfo, WeatherStationQuery } from './weather-station.models';
+import { DOCUMENT_TOKEN } from '../testing/di';
 
 @Injectable({ providedIn: 'root' })
 /**
@@ -9,7 +10,12 @@ import { WeatherStation, WeatherStationDetails, WeatherStationInfo, WeatherStati
  * Provides methods to search for stations and retrieve detailed data for specific stations.
  */
 export class WeatherStationRepositoryService {
-  constructor(private readonly http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+
+  // Dummy injection of DOCUMENT_TOKEN to force at least one explicit injectable token usage.
+  // (Keeps this file consistent with our DI-token approach across Vitest.)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private readonly _doc = inject(DOCUMENT_TOKEN, { optional: true });
 
   /**
    * Searches for weather stations based on geographic and capability criteria.
