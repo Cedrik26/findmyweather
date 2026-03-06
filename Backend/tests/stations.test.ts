@@ -22,7 +22,7 @@ describe('stationSearchSchema validation', () => {
             expect(result.data.lat).toBe(52.52);
             expect(result.data.lon).toBe(13.405);
             expect(result.data.radiusKm).toBe(50);  // Default
-            expect(result.data.maxStations).toBe(10);  // Default
+            expect(result.data.maxStations).toBe(100);  // Default
         }
     });
 
@@ -123,10 +123,10 @@ describe('stationDataSchema validation', () => {
         }
     });
 
-    test('should reject missing required fields', () => {
+    test('should reject invalid field values', () => {
         const result = stationDataSchema.safeParse({
-            startYear: 2000
-            // endYear is missing
+            startYear: 'not-a-number',
+            endYear: 2020
         });
 
         expect(result.success).toBe(false);

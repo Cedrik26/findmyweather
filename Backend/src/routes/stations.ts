@@ -53,13 +53,12 @@ router.get(
             // Filter by year range if specified
             if (startYear || endYear) {
                 stations = stations.filter(s => {
-                    if (startYear && s.lastYear < endYear) return false;
-                    if (endYear && s.firstYear > startYear) return false;
+                    if (endYear && s.lastYear < endYear) return false;
+                    if (startYear && s.firstYear > startYear) return false;
                     return true;
                 });
             }
 
-            // Calculate distances and filter
             const nearbyStations = filterStationsByDistance(
                 stations,
                 lat,
@@ -68,7 +67,6 @@ router.get(
                 maxStations
             );
 
-            // Map to response format
             const result: StationMetadata[] = nearbyStations.map(s => ({
                 id: s.id,
                 name: s.name,
@@ -80,7 +78,6 @@ router.get(
                 lastYear: s.lastYear
             }));
 
-            // Cache result
             searchCache.set(cacheKey, result);
 
             res.json(result);
@@ -102,7 +99,7 @@ router.get(
     '/stations/:id',
     async (req: Request, res: Response): Promise<void> => {
         try {
-            const { id } = req.params;
+            const id = req.params.id as string;
 
             if (!id) {
                 res.status(400).json({
@@ -142,7 +139,7 @@ router.get(
     validateStationData,
     async (req: Request, res: Response): Promise<void> => {
         try {
-            const { id } = req.params;
+            const id = req.params.id as string;
             const params = (req as Request & { validated: ValidatedStationData }).validated;
             const { startYear, endYear, metrics } = params;
 
@@ -211,4 +208,4 @@ router.get(
     }
 );
 
-export default router;
+export default router; 
