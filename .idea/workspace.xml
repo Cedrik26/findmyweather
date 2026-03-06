@@ -4,21 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="weatherstation icons angepasst">
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/map/map.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/testing/di.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.spec.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-search.service.spec.ts" afterDir="false" />
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="test coverage erhöht">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/weather-stations/weather-station-repository.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/setup-vitest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/setup-vitest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +122,7 @@
       <workItem from="1772196567043" duration="4281000" />
       <workItem from="1772532171033" duration="1573000" />
       <workItem from="1772798712568" duration="1197000" />
-      <workItem from="1772804420828" duration="3741000" />
+      <workItem from="1772804420828" duration="5776000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -316,7 +308,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772533658018</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="test coverage erhöht">
+      <option name="closed" value="true" />
+      <created>1772830768643</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1772830768643</updated>
+    </task>
+    <task id="LOCAL-00025" summary="test coverage erhöht">
+      <option name="closed" value="true" />
+      <created>1772832244433</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1772832244433</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -327,23 +335,11 @@
       <map>
         <entry key="13ca4e7a-6b62-475a-a145-e352234ce550" value="TOOL_WINDOW" />
         <entry key="d495b5a8-f0a1-477d-bb2e-e6a424d38342" value="TOOL_WINDOW" />
-        <entry key="181cf97f-7d1b-4dea-abbe-e805e5de2b84" value="TOOL_WINDOW" />
-        <entry key="8d70ddf9-01b2-46c8-b418-4162bf938b4a" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="TAB_STATES">
       <map>
         <entry key="13ca4e7a-6b62-475a-a145-e352234ce550">
-          <value>
-            <State />
-          </value>
-        </entry>
-        <entry key="181cf97f-7d1b-4dea-abbe-e805e5de2b84">
-          <value>
-            <State />
-          </value>
-        </entry>
-        <entry key="8d70ddf9-01b2-46c8-b418-4162bf938b4a">
           <value>
             <State />
           </value>
@@ -378,7 +374,8 @@
     <MESSAGE value="darkmode" />
     <MESSAGE value="spaltenlinien in tabelle hinzugefügt" />
     <MESSAGE value="dateinamen angepasst" />
-    <option name="LAST_COMMIT_MESSAGE" value="dateinamen angepasst" />
+    <MESSAGE value="test coverage erhöht" />
+    <option name="LAST_COMMIT_MESSAGE" value="test coverage erhöht" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

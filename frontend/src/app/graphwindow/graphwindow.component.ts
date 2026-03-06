@@ -24,10 +24,6 @@ import { Subscription } from 'rxjs';
 import { WeatherStationRepositoryService } from '../weather-stations/weather-station-repository.service';
 import { WeatherStationDetails } from '../weather-stations/weather-station.models';
 
-// Vitest/Vite: inline templates/styles vermeiden Probleme mit templateUrl/styleUrl.
-import graphTemplate from './graphwindow.component.html?raw';
-import graphStyles from './graphwindow.component.css?raw';
-
 type TableRow = {
   label: string;
   values: Array<string | number | null>;
@@ -50,12 +46,15 @@ type DatasetToggle = {
   color?: string;
 };
 
+// Vitest/Vite: inline templates/styles vermeiden Probleme mit templateUrl/styleUrl.
+// Entfernt: Vite/?raw Imports (Angular CLI kann das nicht laden)
+
 @Component({
   selector: 'app-graphwindow',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MatProgressSpinnerModule, MatCheckboxModule],
-  template: graphTemplate,
-  styles: [graphStyles],
+  templateUrl: './graphwindow.component.html',
+  styleUrl: './graphwindow.component.css',
 })
 /**
  * Component responsible for displaying detailed weather station data.

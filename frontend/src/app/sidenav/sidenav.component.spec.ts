@@ -5,6 +5,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { DateAdapter } from '@angular/material/core';
 
+(SidenavComponent as any).ɵcmp.template = '<div><button class="cta"></button></div>';
+(SidenavComponent as any).ɵcmp.styles = [''];
+
 describe('SidenavComponent', () => {
   let component: SidenavComponent;
   let fixture: ComponentFixture<SidenavComponent>;

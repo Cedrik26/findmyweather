@@ -8,6 +8,10 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import Chart from 'chart.js/auto';
 
+// Inline Template/Styles für Vitest (da die Komponente im App-Build templateUrl/styleUrl nutzt)
+(Graphwindow as any).ɵcmp.template = '<div></div>';
+(Graphwindow as any).ɵcmp.styles = [''];
+
 describe('Graphwindow', () => {
   let component: Graphwindow;
   let fixture: ComponentFixture<Graphwindow>;
