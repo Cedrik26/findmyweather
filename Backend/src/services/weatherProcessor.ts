@@ -58,6 +58,35 @@ function calculateAverage(values: number[]): number | null {
 }
 
 /**
+ * Groups daily observations by month and calculates per-month averages.
+ * Returns a Map<month, average> with only months that have valid data.
+ */
+function calculateMonthlyAverages(observations: DailyObservation[]): Map<number, number> {
+    // Group values by month
+    const monthGroups = new Map<number, number[]>();
+
+    for (const obs of observations) {
+        if (obs.value === null || obs.qualityFlag !== '') continue;
+        const month = getMonth(obs.date);
+        if (!monthGroups.has(month)) {
+            monthGroups.set(month, []);
+        }
+        monthGroups.get(month)!.push(obs.value);
+    }
+
+    // Calculate average per month
+    const monthlyAvgs = new Map<number, number>();
+    for (const [month, values] of monthGroups) {
+        const avg = calculateAverage(values);
+        if (avg !== null) {
+            monthlyAvgs.set(month, avg);
+        }
+    }
+
+    return monthlyAvgs;
+}
+
+/**
  * Gets the season for a given month
  */
 function getSeasonForMonth(month: number, latitude: number): keyof SeasonalData {
@@ -71,14 +100,16 @@ function getSeasonForMonth(month: number, latitude: number): keyof SeasonalData 
     return isNorth ? 'winter' : 'summer';
 }
 
-/**
- * Determines the "winter year" for a date.
- * Winter Dec 2020 - Feb 2021 belongs to winter year 2020.
- */
-function getWinterYear(date: string): number {
+
+function isCrossYearSeason(month: number, latitude: number): boolean {
+    const season = getSeasonForMonth(month, latitude);
+    return (month === 12 || month <= 2) &&
+        (season === 'winter' || season === 'summer');
+}
+
+function getCrossYearSeasonYear(date: string): number {
     const year = getYear(date);
     const month = getMonth(date);
-    // January and February belong to the previous year's winter
     if (month <= 2) return year - 1;
     return year;
 }
@@ -104,20 +135,15 @@ function groupByYear(observations: DailyObservation[]): Map<number, DailyObserva
     return grouped;
 }
 
-/**
- * Calculates annual average for a set of observations
- */
-export function calculateAnnualAverage(observations: DailyObservation[]): number | null {
-    const values = observations
-        .filter(obs => obs.value !== null && obs.qualityFlag === '')
-        .map(obs => obs.value);
 
-    return calculateAverage(values);
+export function calculateAnnualAverage(observations: DailyObservation[]): number | null {
+    const monthlyAvgs = calculateMonthlyAverages(observations);
+    if (monthlyAvgs.size === 0) return null;
+
+    const monthValues = Array.from(monthlyAvgs.values());
+    return calculateAverage(monthValues);
 }
 
-/**
- * Calculates seasonal averages for a specific year
- */
 export function calculateSeasonalAverages(
     observations: DailyObservation[],
     year: number,
@@ -130,12 +156,12 @@ export function calculateSeasonalAverages(
         winter: null
     };
 
-    // Group by season
-    const seasonGroups: Record<keyof SeasonalData, number[]> = {
-        spring: [],
-        summer: [],
-        fall: [],
-        winter: []
+    // Group observations by (season, month) — each month collects daily values
+    const seasonMonthGroups: Record<keyof SeasonalData, Map<number, number[]>> = {
+        spring: new Map(),
+        summer: new Map(),
+        fall: new Map(),
+        winter: new Map()
     };
 
     for (const obs of observations) {
@@ -145,22 +171,37 @@ export function calculateSeasonalAverages(
         const obsYear = getYear(obs.date);
         const season = getSeasonForMonth(month, latitude);
 
-        // Handle winter specially (crosses year boundary)
-        if (season === 'winter') {
-            const winterYear = getWinterYear(obs.date);
-            if (winterYear === year) {
-                seasonGroups.winter.push(obs.value);
+        // Handle cross-year seasons (northern winter OR southern summer)
+        if (isCrossYearSeason(month, latitude)) {
+            const seasonYear = getCrossYearSeasonYear(obs.date);
+            if (seasonYear === year) {
+                if (!seasonMonthGroups[season].has(month)) {
+                    seasonMonthGroups[season].set(month, []);
+                }
+                seasonMonthGroups[season].get(month)!.push(obs.value);
             }
         } else if (obsYear === year) {
-            seasonGroups[season].push(obs.value);
+            if (!seasonMonthGroups[season].has(month)) {
+                seasonMonthGroups[season].set(month, []);
+            }
+            seasonMonthGroups[season].get(month)!.push(obs.value);
         }
     }
 
-    // Calculate averages
-    seasonalData.spring = calculateAverage(seasonGroups.spring);
-    seasonalData.summer = calculateAverage(seasonGroups.summer);
-    seasonalData.fall = calculateAverage(seasonGroups.fall);
-    seasonalData.winter = calculateAverage(seasonGroups.winter);
+    // For each season: compute monthly averages, then average of those
+    for (const season of ['spring', 'summer', 'fall', 'winter'] as (keyof SeasonalData)[]) {
+        const monthMap = seasonMonthGroups[season];
+        const monthlyAvgs: number[] = [];
+
+        for (const [, values] of monthMap) {
+            const avg = calculateAverage(values);
+            if (avg !== null) {
+                monthlyAvgs.push(avg);
+            }
+        }
+
+        seasonalData[season] = calculateAverage(monthlyAvgs);
+    }
 
     return seasonalData;
 }
@@ -187,7 +228,8 @@ export function processWeatherData(
     for (let year = startYear; year <= endYear; year++) {
         const yearObs = yearGroups.get(year) || [];
 
-        // For winter calculations, we also need data from adjacent years
+        // For cross-year season calculations (northern winter / southern summer),
+        // we need Dec from the previous year and Jan+Feb from the next year
         const extendedObs = [
             ...(yearGroups.get(year - 1)?.filter(o => getMonth(o.date) === 12) || []),
             ...yearObs,

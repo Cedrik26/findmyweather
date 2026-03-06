@@ -155,56 +155,55 @@ export async function fetchAndStoreStations(): Promise<number> {
     return stationsWithData.length;
 }
 
-// ==========================================
-// Weather Data Parsing (CSV format)
-// ==========================================
 
 /**
- * Parses a line from GHCN daily access CSV format.
- * Format (see NOAA access/*.csv):
- *   "STATION","DATE","LATITUDE","LONGITUDE","ELEVATION","NAME",
- *   ... many element columns ...
- *   Each element value is like "   28" (tenths) and followed by "flag" column like ",,E".
+ * Parses a single row of the AWS S3 GHCN CSV (long format).
+ * Columns: ID, DATE, ELEMENT, DATA_VALUE, M_FLAG, Q_FLAG, S_FLAG, OBS_TIME
+ * Each row contains exactly one element (e.g. TMAX or TMIN).
  */
-function parseWeatherAccessCsv(
-    headerParts: string[],
+function parseS3CsvRow(
+    headerIndex: Record<string, number>,
     parts: string[],
     stationId: string
-): DailyObservation[] {
-    const out: DailyObservation[] = [];
+): DailyObservation | null {
+    const idIdx = headerIndex['ID'];
+    const dateIdx = headerIndex['DATE'];
+    const elemIdx = headerIndex['ELEMENT'];
+    const valIdx = headerIndex['DATA_VALUE'];
+    const qIdx = headerIndex['Q_FLAG'];
 
-    const station = unquote(parts[0] ?? '').trim();
-    if (!station || station !== stationId) return out;
+    if (idIdx === undefined || dateIdx === undefined || elemIdx === undefined || valIdx === undefined) {
+        return null;
+    }
 
-    const dateRaw = unquote(parts[1] ?? '').trim();
-    if (!dateRaw) return out;
+    const station = (parts[idIdx] ?? '').trim();
+    if (!station || station !== stationId) return null;
+
+    const element = (parts[elemIdx] ?? '').trim().toUpperCase();
+    if (element !== 'TMIN' && element !== 'TMAX') return null;
+
+    const dateRaw = (parts[dateIdx] ?? '').trim();
+    if (!dateRaw) return null;
 
     const date = dateRaw.includes('-')
         ? dateRaw
         : `${dateRaw.substring(0, 4)}-${dateRaw.substring(4, 6)}-${dateRaw.substring(6, 8)}`;
 
-    // Map header -> value
-    for (let i = 0; i < headerParts.length && i < parts.length; i++) {
-        const key = unquote(headerParts[i] ?? '').trim().toUpperCase();
-        if (key !== 'TMIN' && key !== 'TMAX') continue;
+    const raw = (parts[valIdx] ?? '').trim();
+    if (!raw) return null;
 
-        const raw = unquote(parts[i] ?? '').trim();
-        if (!raw) continue;
+    const rawValue = parseInt(raw, 10);
+    if (Number.isNaN(rawValue)) return null;
 
-        // value is tenths of °C
-        const rawValue = parseInt(raw, 10);
-        if (Number.isNaN(rawValue)) continue;
+    const qualityFlag = qIdx !== undefined ? (parts[qIdx] ?? '').trim() : '';
 
-        out.push({
-            stationId,
-            date,
-            element: key as MetricType,
-            value: rawValue / 10,
-            qualityFlag: '' // quality flags are in separate columns; we ignore them for now
-        });
-    }
-
-    return out;
+    return {
+        stationId,
+        date,
+        element: element as MetricType,
+        value: rawValue / 10,  // value is tenths of °C
+        qualityFlag
+    };
 }
 
 function unquote(v: string): string {
@@ -272,6 +271,7 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
         throw new Error(`Failed to fetch weather data: ${response.status}`);
     }
 
+    // S3 liefert normale CSV-Dateien
     const csvText = await response.text();
     const lines = csvText.split('\n').filter(l => l.trim().length > 0);
     if (lines.length < 2) {
@@ -279,15 +279,20 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
         return 0;
     }
 
-    const headerParts = parseCsvLine(lines[0]! ).map(s => s.trim());
+    // Build header index map: column name -> column index
+    const headerParts = parseCsvLine(lines[0]!).map(s => s.trim().toUpperCase());
+    const headerIndex: Record<string, number> = {};
+    for (let i = 0; i < headerParts.length; i++) {
+        headerIndex[headerParts[i]!] = i;
+    }
 
     // Parse rows
     const observations: DailyObservation[] = [];
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i]!;
         const parts = parseCsvLine(line);
-        const obs = parseWeatherAccessCsv(headerParts, parts, stationId);
-        if (obs.length) observations.push(...obs);
+        const obs = parseS3CsvRow(headerIndex, parts, stationId);
+        if (obs) observations.push(obs);
     }
 
     console.log(`📊 Parsed ${observations.length} observations for ${stationId}`);

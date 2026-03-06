@@ -3,9 +3,9 @@ export const config = {
     dbPath: process.env.DB_PATH || './data/ghcn.db',
 
     ghcn: {
-        stationsUrl: 'https://www.ncei.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt',
-        inventoryUrl: 'https://www.ncei.noaa.gov/pub/data/ghcn/daily/ghcnd-inventory.txt',
-        dataBaseUrl: 'https://www.ncei.noaa.gov/data/global-historical-climatology-network-daily/access/'
+        stationsUrl: 'https://noaa-ghcn-pds.s3.amazonaws.com/ghcnd-stations.txt',
+        inventoryUrl: 'https://noaa-ghcn-pds.s3.amazonaws.com/ghcnd-inventory.txt',
+        dataBaseUrl: 'https://noaa-ghcn-pds.s3.amazonaws.com/csv/by_station/'
     },
 
     cache: {
