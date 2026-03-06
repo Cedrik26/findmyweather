@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
-import { Subject, throwError } from 'rxjs';
+import { Subject, throwError, of } from 'rxjs';
 import Chart from 'chart.js/auto';
 import { Graphwindow } from './graphwindow.component';
 import { WeatherStationRepositoryService } from '../weather-stations/weather-station-repository.service';
@@ -154,6 +154,134 @@ describe('Graphwindow', () => {
 
     expect(Chart.defaults.color).toContain('0,0,0');
     expect(chartSpy.update).toHaveBeenCalled();
+  });
+
+  it('tminToggles and tmaxToggles should filter by metric', () => {
+    component.datasetToggles = [
+      { datasetIndex: 0, label: 'A', displayLabel: 'A', metric: 'TMIN', visible: true, color: '#0f0' },
+      { datasetIndex: 1, label: 'B', displayLabel: 'B', metric: 'TMAX', visible: true, color: '#f00' },
+      { datasetIndex: 2, label: 'C', displayLabel: 'C', metric: 'OTHER', visible: true, color: '#00f' },
+    ] as any;
+
+    expect(component.tminToggles).toHaveLength(1);
+    expect(component.tmaxToggles).toHaveLength(1);
+  });
+
+  it('ngOnDestroy should unsubscribe, destroy chart and disconnect darkMode observer', () => {
+    const unsub = vi.fn();
+    const destroy = vi.fn();
+    const disconnect = vi.fn();
+
+    (component as any).sub = { unsubscribe: unsub };
+    (component as any).chart = { destroy };
+    (component as any).darkModeObserver = { disconnect };
+
+    component.ngOnDestroy();
+
+    expect(unsub).toHaveBeenCalled();
+    expect(destroy).toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+    expect((component as any).chart).toBeUndefined();
+  });
+
+  it('ngAfterViewInit should register MutationObserver and schedule render when details exist', () => {
+    const observe = vi.fn();
+    const scheduleSpy = vi.spyOn(component as any, 'scheduleChartRender');
+
+    class MutationObserverMock {
+      observe = observe;
+      disconnect = vi.fn();
+      constructor(_cb: MutationCallback) {}
+    }
+    (globalThis as any).MutationObserver = MutationObserverMock as any;
+
+    component.details = { station: null, labels: ['2000'], datasets: [{ label: 'A', data: [1] }] } as any;
+    component.error = null;
+
+    component.ngAfterViewInit();
+
+    expect((component as any).viewReady).toBe(true);
+    expect(observe).toHaveBeenCalled();
+    expect(scheduleSpy).toHaveBeenCalled();
+  });
+
+  it('ngAfterViewInit should not schedule render when error exists', () => {
+    const scheduleSpy = vi.spyOn(component as any, 'scheduleChartRender');
+    class MutationObserverMock {
+      observe = vi.fn();
+      disconnect = vi.fn();
+      constructor(_cb: MutationCallback) {}
+    }
+    (globalThis as any).MutationObserver = MutationObserverMock as any;
+
+    component.details = { station: null, labels: ['2000'], datasets: [{ label: 'A', data: [1] }] } as any;
+    component.error = 'boom';
+
+    component.ngAfterViewInit();
+
+    expect(scheduleSpy).not.toHaveBeenCalled();
+  });
+
+  it('ngOnChanges should set error when stationId is missing', () => {
+    component.stationId = null;
+    component.ngOnChanges({ stationId: {} as any });
+
+    expect(component.loading).toBe(false);
+    expect(component.error).toContain('Keine Station ausgewählt');
+    expect(component.tableRows).toEqual([]);
+  });
+
+  it('successful load with empty labels/datasets should set empty-data error message', () => {
+    repoSpy.getStationDetails.mockReturnValue(
+      of({
+        station: { id: 'X', name: 'X', lat: 0, lon: 0, firstYear: 2000, lastYear: 2001 },
+        labels: [],
+        datasets: [],
+        message: 'Keine Daten vorhanden',
+      } as any)
+    );
+
+    component.stationId = 'X';
+    component.ngOnChanges({ stationId: {} as any });
+
+    expect(component.loading).toBe(false);
+    expect(component.error).toBe('Keine Daten vorhanden');
+    expect(cdrSpy.detectChanges).toHaveBeenCalled();
+  });
+
+  it('scheduleChartRender should return early when details are missing or already pending', () => {
+    (component as any).viewReady = true;
+    component.details = null;
+    (component as any).pendingRender = false;
+    (component as any).scheduleChartRender();
+    expect((component as any).pendingRender).toBe(false);
+
+    component.details = { station: null, labels: ['2000'], datasets: [{ label: 'A', data: [1] }] } as any;
+    (component as any).pendingRender = true;
+    (component as any).scheduleChartRender();
+    expect((component as any).pendingRender).toBe(true);
+  });
+
+  it('renderChart should return early without canvas', () => {
+    (component as any).chartCanvas = undefined;
+    (component as any).renderChart({ station: null, labels: ['2000'], datasets: [{ label: 'A', data: [1] }] });
+    expect((component as any).chart).toBeUndefined();
+  });
+
+  it('onToggleDataset should update tableRows even when chart is missing', () => {
+    component.details = {
+      station: null,
+      labels: ['2000'],
+      datasets: [{ label: 'A Jahresdurchschnitt', data: [1] }],
+    } as any;
+    component.datasetToggles = [
+      { datasetIndex: 0, label: 'A Jahresdurchschnitt', displayLabel: 'A', metric: 'TMIN', visible: true, color: '#0000FF' },
+    ] as any;
+
+    component.onToggleDataset(component.datasetToggles[0] as any, false);
+
+    expect(component.datasetToggles[0]?.visible).toBe(false);
+    expect(component.tableRows).toEqual([{ label: '2000', values: [] }]);
   });
 });
 

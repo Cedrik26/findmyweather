@@ -146,4 +146,91 @@ describe('App', () => {
     expect(component.selectedStationId).toBeNull();
     expect(cdrSpy.detectChanges).toHaveBeenCalled();
   });
+
+  it('openGraph should show the graph overlay', () => {
+    component.openGraph();
+    expect(component.showGraph).toBe(true);
+  });
+
+  it('ngOnDestroy should unsubscribe search subscription and disconnect resize observer', () => {
+    const unsub = vi.fn();
+    const disconnect = vi.fn();
+    (component as any).stationSearchSub = { unsubscribe: unsub };
+    (component as any).sidenavResizeObserver = { disconnect };
+
+    component.ngOnDestroy();
+
+    expect(unsub).toHaveBeenCalled();
+    expect(disconnect).toHaveBeenCalled();
+  });
+
+  it('private onMapClick should update coordinates, set marker and trigger detectChanges', () => {
+    (component as any).onMapClick({ lat: 1.23456789, lng: 9.87654321 });
+
+    expect(component.latitude).toBe('1.234568');
+    expect(component.longitude).toBe('9.876543');
+    expect(mapServiceSpy.setMarker).toHaveBeenCalledWith({ lat: 1.23456789, lng: 9.87654321 });
+    expect(cdrSpy.detectChanges).toHaveBeenCalled();
+  });
+
+  it('private onLookupGraphForStation should set selection and open graph asynchronously', async () => {
+    (component as any).onLookupGraphForStation('ST99');
+    await new Promise((r) => setTimeout(r, 0));
+
+    expect(component.selectedStationId).toBe('ST99');
+    expect(component.showGraph).toBe(true);
+    expect(cdrSpy.detectChanges).toHaveBeenCalled();
+  });
+
+  it('ngAfterViewInit should wire map callbacks, tilesReady, resize observer and size invalidation', async () => {
+    const mapDiv = document.createElement('div');
+    const sidenavEl = document.createElement('div');
+    vi.spyOn(sidenavEl, 'getBoundingClientRect').mockReturnValue({ width: 321 } as DOMRect);
+
+    (component as any).mapEl = { nativeElement: mapDiv };
+    (component as any).sidenavEl = { nativeElement: sidenavEl };
+
+    const setPropertySpy = vi.spyOn(document.documentElement.style, 'setProperty');
+
+    let clickHandler: ((pos: any) => void) | undefined;
+    let graphHandler: ((id: string) => void) | undefined;
+    mapServiceSpy.onClick.mockImplementation((cb: (pos: any) => void) => { clickHandler = cb; });
+    mapServiceSpy.onLookupGraphForStation.mockImplementation((cb: (id: string) => void) => { graphHandler = cb; });
+    mapServiceSpy.onTilesReady.mockImplementation((cb: () => void) => cb());
+
+    const rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+      cb(0);
+      return 1 as any;
+    });
+
+    const resizeObserve = vi.fn();
+    const resizeDisconnect = vi.fn();
+    class ResizeObserverMock {
+      observe = resizeObserve;
+      disconnect = resizeDisconnect;
+      constructor(_cb: ResizeObserverCallback) {}
+    }
+    (globalThis as any).ResizeObserver = ResizeObserverMock as any;
+
+    component.ngAfterViewInit();
+    await Promise.resolve();
+
+    expect(mapServiceSpy.initMap).toHaveBeenCalledWith(mapDiv);
+    expect(mapServiceSpy.onClick).toHaveBeenCalled();
+    expect(mapServiceSpy.onLookupGraphForStation).toHaveBeenCalled();
+    expect(mapServiceSpy.invalidateSize).toHaveBeenCalled();
+    expect(component.mapLoading).toBe(false);
+    expect(setPropertySpy).toHaveBeenCalledWith('--sidenav-width', '321px');
+    expect(resizeObserve).toHaveBeenCalledWith(sidenavEl);
+    expect(rafSpy).toHaveBeenCalled();
+
+    clickHandler?.({ lat: 5, lng: 6 });
+    expect(component.latitude).toBe('5.000000');
+    expect(component.longitude).toBe('6.000000');
+
+    graphHandler?.('ST-TEST');
+    await new Promise((r) => setTimeout(r, 0));
+    expect(component.selectedStationId).toBe('ST-TEST');
+    expect(component.showGraph).toBe(true);
+  });
 });
