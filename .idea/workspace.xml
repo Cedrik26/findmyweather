@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="test coverage erhöht">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.ts" afterDir="false" />
+    <list default="true" id="2964ed0c-8658-4829-a4da-79aef5f03374" name="Changes" comment="message wenn keine stationen gefunden">
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/app.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/graphwindow/graphwindow.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.spec.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/sidenav/sidenav.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/setup-vitest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/setup-vitest.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,7 +120,7 @@
       <workItem from="1772196567043" duration="4281000" />
       <workItem from="1772532171033" duration="1573000" />
       <workItem from="1772798712568" duration="1197000" />
-      <workItem from="1772804420828" duration="5776000" />
+      <workItem from="1772804420828" duration="6463000" />
     </task>
     <task id="LOCAL-00001" summary="j">
       <option name="closed" value="true" />
@@ -324,7 +322,23 @@
       <option name="project" value="LOCAL" />
       <updated>1772832244433</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="code fixes">
+      <option name="closed" value="true" />
+      <created>1772832942003</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1772832942004</updated>
+    </task>
+    <task id="LOCAL-00027" summary="message wenn keine stationen gefunden">
+      <option name="closed" value="true" />
+      <created>1772833406855</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1772833406855</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -375,7 +389,9 @@
     <MESSAGE value="spaltenlinien in tabelle hinzugefügt" />
     <MESSAGE value="dateinamen angepasst" />
     <MESSAGE value="test coverage erhöht" />
-    <option name="LAST_COMMIT_MESSAGE" value="test coverage erhöht" />
+    <MESSAGE value="code fixes" />
+    <MESSAGE value="message wenn keine stationen gefunden" />
+    <option name="LAST_COMMIT_MESSAGE" value="message wenn keine stationen gefunden" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
