@@ -1,0 +1,70 @@
+services:
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: ghcn-postgres
+    environment:
+      POSTGRES_USER: ghcn
+      POSTGRES_PASSWORD: ghcn_secret
+      POSTGRES_DB: ghcn_weather
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ghcn -d ghcn_weather"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ==========================================
+  # Backend (Bun + Express)
+  # ==========================================
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: ghcn-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=ghcn
+      - DB_PASSWORD=ghcn_secret
+      - DB_NAME=ghcn_weather
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
+
+  # ==========================================
+  # Frontend (Angular + Nginx)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ghcn-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    driver: local

@@ -1,6 +1,13 @@
 export const config = {
     port: parseInt(process.env.PORT || '3000', 10),
-    dbPath: process.env.DB_PATH || './data/ghcn.db',
+
+    db: {
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT || '5432', 10),
+        user: process.env.DB_USER || 'ghcn',
+        password: process.env.DB_PASSWORD || 'ghcn_secret',
+        database: process.env.DB_NAME || 'ghcn_weather',
+    },
 
     ghcn: {
         stationsUrl: 'https://noaa-ghcn-pds.s3.amazonaws.com/ghcnd-stations.txt',

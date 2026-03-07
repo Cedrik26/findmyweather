@@ -77,7 +77,7 @@ export async function fetchAndStoreStations(): Promise<number> {
     console.log('📡 Fetching GHCN station metadata...');
 
     // Check if we need to sync (sync once per day)
-    const lastSync = getSyncStatus('stations');
+    const lastSync = await getSyncStatus('stations');
     if (lastSync) {
         const lastSyncDate = new Date(lastSync.lastSync);
         const hoursSinceSync = (Date.now() - lastSyncDate.getTime()) / (1000 * 60 * 60);
@@ -145,11 +145,11 @@ export async function fetchAndStoreStations(): Promise<number> {
 
     // Store in database
     console.log('💾 Storing stations in database...');
-    insertStationsBatch(stationsWithData);
-    insertInventoryBatch(inventoryEntries);
+    await insertStationsBatch(stationsWithData);
+    await insertInventoryBatch(inventoryEntries);
 
-    updateSyncStatus('stations', stationsWithData.length);
-    updateSyncStatus('inventory', inventoryEntries.length);
+    await updateSyncStatus('stations', stationsWithData.length);
+    await updateSyncStatus('inventory', inventoryEntries.length);
 
     console.log('✅ Station sync complete');
     return stationsWithData.length;
@@ -253,7 +253,7 @@ function parseCsvLine(line: string): string[] {
  */
 export async function fetchAndStoreStationData(stationId: string): Promise<number> {
     // Check if we already have data
-    if (hasWeatherDataForStation(stationId)) {
+    if (await hasWeatherDataForStation(stationId)) {
         console.log(`✅ Using cached weather data for ${stationId}`);
         return 0;
     }
@@ -302,10 +302,10 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
         const BATCH_SIZE = 5000;
         for (let i = 0; i < observations.length; i += BATCH_SIZE) {
             const batch = observations.slice(i, i + BATCH_SIZE);
-            insertWeatherDataBatch(batch);
+            await insertWeatherDataBatch(batch);
         }
 
-        updateSyncStatus(`weather_${stationId}`, observations.length);
+        await updateSyncStatus(`weather_${stationId}`, observations.length);
         console.log(`✅ Stored weather data for ${stationId}`);
     }
 
@@ -316,7 +316,7 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
  * Checks if stations need to be synced and syncs if necessary
  */
 export async function ensureStationsLoaded(): Promise<void> {
-    const count = getStationsCount();
+    const count = await getStationsCount();
     if (count === 0) {
         await fetchAndStoreStations();
     }

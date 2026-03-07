@@ -103,7 +103,7 @@ async function startup(): Promise<void> {
     console.log('🚀 Starting GHCN Weather Backend...');
 
     // Initialize database
-    initializeDatabase();
+    await initializeDatabase();
 
     // Pre-load station metadata in background
     console.log('📡 Loading station metadata...');
@@ -123,15 +123,15 @@ async function startup(): Promise<void> {
 }
 
 // Graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down...');
-    closeDatabase();
+    await closeDatabase();
     process.exit(0);
 });
 
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
     console.log('\n🛑 Shutting down...');
-    closeDatabase();
+    await closeDatabase();
     process.exit(0);
 });
 

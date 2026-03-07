@@ -7,7 +7,6 @@
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
     "test": "bun test",
-
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
     "docker:build": "docker build -t ghcn-weather-backend .",
@@ -17,6 +16,7 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/pg": "^8.11.0",
     "tsx": "^4.21.0"
   },
   "peerDependencies": {
@@ -26,6 +26,7 @@
     "cors": "^2.8.5",
     "express": "^5.0.1",
     "node-cache": "^5.1.2",
+    "pg": "^8.13.0",
     "zod": "^3.24.1"
   }
 }

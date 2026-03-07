@@ -48,7 +48,7 @@ router.get(
             await ensureStationsLoaded();
 
             // Get all stations from database
-            let stations = getAllStations();
+            let stations = await getAllStations();
 
             // Filter by year range if specified
             if (startYear || endYear) {
@@ -109,7 +109,7 @@ router.get(
                 return;
             }
 
-            const station = getStationById(id);
+            const station = await getStationById(id);
 
             if (!station) {
                 res.status(404).json({
@@ -152,7 +152,7 @@ router.get(
             }
 
             // Verify station exists
-            const station = getStationById(id);
+            const station = await getStationById(id);
             if (!station) {
                 res.status(404).json({
                     error: 'Not Found',
@@ -173,7 +173,7 @@ router.get(
             await fetchAndStoreStationData(id);
 
             // Get data from database
-            const observations = getWeatherData(id, metrics, startYear, endYear);
+            const observations = await getWeatherData(id, metrics, startYear, endYear);
 
             if (observations.length === 0) {
                 res.json({
