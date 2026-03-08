@@ -26,14 +26,36 @@ Wetterdaten-Webanwendung basierend auf dem **GHCN (Global Historical Climatology
 > [!IMPORTANT]
 > Docker Desktop muss **gestartet** sein, bevor du die Befehle ausführst.
 
-## 🚀 Schnellstart
+## 🚀 Starten der Anwendung
+
+Es gibt zwei Wege, die Anwendung mit Docker zu starten. **Variante A** ist der empfohlene, schnellste Weg.
+
+### Variante A: Mit vorgebauten Images (Empfohlen)
+Dank unserer GitHub Actions CI/CD Pipeline werden bei jedem Push fertige Docker-Images in die GitHub Container Registry (GHCR) geladen. Du musst dadurch nichts selbst lokal bauen.
+
+```bash
+# 1. Repository klonen (um die docker-compose.yml zu bekommen)
+git clone https://github.com/Cedrik26/findmyweather.git
+cd findmyweather
+
+# 2. Vorgebaute Images von GHCR pullen
+docker pull ghcr.io/cedrik26/findmyweather-frontend:latest
+docker pull ghcr.io/cedrik26/findmyweather-backend:latest
+# (Die PostgreSQL-Datenbank wird automatisch vom öffentlichen Docker Hub geladen)
+
+# 3. Container starten
+docker compose up -d
+```
+
+### Variante B: Manuelles lokales Builden
+Wenn du Änderungen am Code vorgenommen hast und diese lokal mit Docker testen willst, kannst du die Images selbst bauen:
 
 ```bash
 # 1. Repository klonen
 git clone https://github.com/Cedrik26/findmyweather.git
 cd findmyweather
 
-# 2. Alle 3 Container bauen und starten (erster Start dauert ~2–3 Min.)
+# 2. Alle 3 Container vom Quellcode bauen und starten (erster Start dauert ~2–3 Min.)
 docker compose up --build
 ```
 
@@ -45,7 +67,7 @@ Danach ist die Anwendung erreichbar unter:
 | http://localhost/api/health | API Health Check |
 | http://localhost:3000/health | Backend direkt |
 
-## Container stoppen
+## 🛑 Container stoppen
 
 ```bash
 # Container stoppen
