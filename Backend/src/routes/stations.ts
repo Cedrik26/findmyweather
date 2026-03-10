@@ -10,9 +10,8 @@ import {
     type ValidatedStationSearch,
     type ValidatedStationData
 } from '../middleware/validation';
-import { getAllStations, getStationById, getWeatherData } from '../models/database';
+import { fetchStationData, ensureStationsLoaded, getAllStations, getStationById } from '../services/ghcnFetcher';
 import { filterStationsByDistance } from '../services/distanceCalculator';
-import { fetchAndStoreStationData, ensureStationsLoaded } from '../services/ghcnFetcher';
 import { combineMetricsForChartJS } from '../services/weatherProcessor';
 import {
     searchCache,
@@ -47,8 +46,8 @@ router.get(
             // Ensure stations are loaded
             await ensureStationsLoaded();
 
-            // Get all stations from database
-            let stations = await getAllStations();
+            // Get all stations from memory
+            let stations = getAllStations();
 
             // Filter by year range if specified
             if (startYear || endYear) {
@@ -109,7 +108,8 @@ router.get(
                 return;
             }
 
-            const station = await getStationById(id);
+            await ensureStationsLoaded();
+            const station = getStationById(id);
 
             if (!station) {
                 res.status(404).json({
@@ -152,7 +152,8 @@ router.get(
             }
 
             // Verify station exists
-            const station = await getStationById(id);
+            await ensureStationsLoaded();
+            const station = getStationById(id);
             if (!station) {
                 res.status(404).json({
                     error: 'Not Found',
@@ -169,11 +170,8 @@ router.get(
                 return;
             }
 
-            // Fetch data from GHCN if not in database
-            await fetchAndStoreStationData(id);
-
-            // Get data from database
-            const observations = await getWeatherData(id, metrics, startYear, endYear);
+            // Fetch and filter data from GHCN S3 directly
+            const observations = await fetchStationData(id, metrics as string[], startYear, endYear);
 
             if (observations.length === 0) {
                 res.json({

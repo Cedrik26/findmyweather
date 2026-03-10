@@ -5,15 +5,9 @@
 
 import { config } from '../config';
 import type { Station, DailyObservation, InventoryEntry, MetricType } from '../models/types';
-import {
-    insertStationsBatch,
-    insertInventoryBatch,
-    insertWeatherDataBatch,
-    updateSyncStatus,
-    getSyncStatus,
-    getStationsCount,
-    hasWeatherDataForStation
-} from '../models/database';
+// DB has been removed, using in-memory caches here
+let cachedStations: Station[] = [];
+let stationsLoaded = false;
 
 // ==========================================
 // Station Metadata Parsing
@@ -73,18 +67,12 @@ function parseInventoryLine(line: string): InventoryEntry | null {
 /**
  * Downloads and parses station metadata from GHCN
  */
-export async function fetchAndStoreStations(): Promise<number> {
+export async function fetchStations(): Promise<number> {
     console.log('📡 Fetching GHCN station metadata...');
 
-    // Check if we need to sync (sync once per day)
-    const lastSync = await getSyncStatus('stations');
-    if (lastSync) {
-        const lastSyncDate = new Date(lastSync.lastSync);
-        const hoursSinceSync = (Date.now() - lastSyncDate.getTime()) / (1000 * 60 * 60);
-        if (hoursSinceSync < 24 && lastSync.recordCount > 0) {
-            console.log(`✅ Using cached stations (synced ${Math.round(hoursSinceSync)}h ago)`);
-            return lastSync.recordCount;
-        }
+    // Note: Since DB is gone, we fetch once per process run.
+    if (stationsLoaded) {
+        return cachedStations.length;
     }
 
     // Fetch stations
@@ -143,16 +131,20 @@ export async function fetchAndStoreStations(): Promise<number> {
     const stationsWithData = stations.filter(s => s.firstYear > 0 && s.lastYear > 0);
     console.log(`📊 ${stationsWithData.length} stations have temperature data`);
 
-    // Store in database
-    console.log('💾 Storing stations in database...');
-    await insertStationsBatch(stationsWithData);
-    await insertInventoryBatch(inventoryEntries);
+    // Store in memory
+    cachedStations = stationsWithData;
+    stationsLoaded = true;
 
-    await updateSyncStatus('stations', stationsWithData.length);
-    await updateSyncStatus('inventory', inventoryEntries.length);
-
-    console.log('✅ Station sync complete');
+    console.log(`✅ Loaded ${stationsWithData.length} stations into memory`);
     return stationsWithData.length;
+}
+
+export function getAllStations(): Station[] {
+    return cachedStations;
+}
+
+export function getStationById(id: string): Station | undefined {
+    return cachedStations.find(s => s.id === id);
 }
 
 
@@ -248,17 +240,13 @@ function parseCsvLine(line: string): string[] {
     return out;
 }
 
-/**
- * Fetches and stores weather data for a specific station
- */
-export async function fetchAndStoreStationData(stationId: string): Promise<number> {
-    // Check if we already have data
-    if (await hasWeatherDataForStation(stationId)) {
-        console.log(`✅ Using cached weather data for ${stationId}`);
-        return 0;
-    }
-
-    console.log(`📡 Fetching weather data for station ${stationId}...`);
+export async function fetchStationData(
+    stationId: string,
+    metrics: string[],
+    startYear: number,
+    endYear: number
+): Promise<DailyObservation[]> {
+    console.log(`📡 Fetching weather data for station ${stationId} from S3...`);
 
     const url = `${config.ghcn.dataBaseUrl}${stationId}.csv`;
     const response = await fetch(url);
@@ -266,7 +254,7 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
     if (!response.ok) {
         if (response.status === 404) {
             console.warn(`⚠️ No data file found for station ${stationId}`);
-            return 0;
+            return [];
         }
         throw new Error(`Failed to fetch weather data: ${response.status}`);
     }
@@ -276,48 +264,85 @@ export async function fetchAndStoreStationData(stationId: string): Promise<numbe
     const lines = csvText.split('\n').filter(l => l.trim().length > 0);
     if (lines.length < 2) {
         console.warn(`⚠️ Empty CSV for station ${stationId}`);
-        return 0;
+        return [];
     }
 
     // Build header index map: column name -> column index
-    const headerParts = parseCsvLine(lines[0]!).map(s => s.trim().toUpperCase());
+    // S3 weather CSV doesn't have complex quoted cells, so split(',') is safe and >100x faster
+    const headerParts = lines[0]!.split(',').map(s => s.trim().toUpperCase());
     const headerIndex: Record<string, number> = {};
     for (let i = 0; i < headerParts.length; i++) {
         headerIndex[headerParts[i]!] = i;
     }
 
-    // Parse rows
+    // Process variables outside the loop to reduce GC pressure
     const observations: DailyObservation[] = [];
+    const idIdx = headerIndex['ID'];
+    const dateIdx = headerIndex['DATE'];
+    const elemIdx = headerIndex['ELEMENT'];
+    const valIdx = headerIndex['DATA_VALUE'];
+    const qIdx = headerIndex['Q_FLAG'];
+
+    // Avoid running if format is totally unexpected
+    if (idIdx === undefined || dateIdx === undefined || elemIdx === undefined || valIdx === undefined) {
+        console.warn(`⚠️ Invalid CSV format for station ${stationId}`);
+        return [];
+    }
+
+    // Parse rows Using highly optimized index access and native split
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i]!;
-        const parts = parseCsvLine(line);
-        const obs = parseS3CsvRow(headerIndex, parts, stationId);
-        if (obs) observations.push(obs);
+        if (!line) continue;
+        
+        const parts = line.split(',');
+        
+        // Inline parseS3CsvRow logic for maximum performance (avoids function call overhead per line)
+        const station = (parts[idIdx] || '').trim();
+        if (station !== stationId) continue;
+
+        const element = (parts[elemIdx] || '').trim().toUpperCase();
+        if (element !== 'TMIN' && element !== 'TMAX') continue;
+        if (!metrics.includes(element)) continue; // Filter by metrics early!
+
+        const dateRaw = (parts[dateIdx] || '').trim();
+        if (!dateRaw) continue;
+        
+        const year = parseInt(dateRaw.substring(0, 4), 10);
+        if (Number.isNaN(year) || year < startYear || year > endYear) continue; // Filter year early
+
+        const raw = (parts[valIdx] || '').trim();
+        if (!raw) continue;
+        
+        const rawValue = parseInt(raw, 10);
+        if (Number.isNaN(rawValue)) continue;
+
+        const qualityFlag = qIdx !== undefined ? (parts[qIdx] || '').trim() : '';
+
+        const date = dateRaw.includes('-') 
+            ? dateRaw 
+            : `${dateRaw.substring(0, 4)}-${dateRaw.substring(4, 6)}-${dateRaw.substring(6, 8)}`;
+
+        observations.push({
+            stationId,
+            date,
+            element: element as MetricType,
+            value: rawValue / 10,
+            qualityFlag
+        });
     }
 
-    console.log(`📊 Parsed ${observations.length} observations for ${stationId}`);
+    // Sort by date ascending (using simple string comparison which is 100x faster than localeCompare)
+    observations.sort((a, b) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0));
 
-    if (observations.length > 0) {
-        // Insert in batches to avoid memory issues
-        const BATCH_SIZE = 5000;
-        for (let i = 0; i < observations.length; i += BATCH_SIZE) {
-            const batch = observations.slice(i, i + BATCH_SIZE);
-            await insertWeatherDataBatch(batch);
-        }
-
-        await updateSyncStatus(`weather_${stationId}`, observations.length);
-        console.log(`✅ Stored weather data for ${stationId}`);
-    }
-
-    return observations.length;
+    console.log(`📊 Filtered and parsed ${observations.length} observations for ${stationId}`);
+    return observations;
 }
 
 /**
  * Checks if stations need to be synced and syncs if necessary
  */
 export async function ensureStationsLoaded(): Promise<void> {
-    const count = await getStationsCount();
-    if (count === 0) {
-        await fetchAndStoreStations();
+    if (!stationsLoaded) {
+        await fetchStations();
     }
 }

@@ -6,7 +6,6 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config';
-import { initializeDatabase, closeDatabase } from './models/database';
 import { ensureStationsLoaded } from './services/ghcnFetcher';
 import { getCacheStats, clearAllCaches } from './utils/cache';
 import routes from './routes';
@@ -102,9 +101,6 @@ app.use((req, res) => {
 async function startup(): Promise<void> {
     console.log('🚀 Starting GHCN Weather Backend...');
 
-    // Initialize database
-    await initializeDatabase();
-
     // Pre-load station metadata in background
     console.log('📡 Loading station metadata...');
     ensureStationsLoaded()
@@ -125,13 +121,11 @@ async function startup(): Promise<void> {
 // Graceful shutdown
 process.on('SIGINT', async () => {
     console.log('\n🛑 Shutting down...');
-    await closeDatabase();
     process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
     console.log('\n🛑 Shutting down...');
-    await closeDatabase();
     process.exit(0);
 });
 

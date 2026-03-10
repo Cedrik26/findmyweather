@@ -118,22 +118,33 @@ export async function insertStationsBatch(stations: Station[]): Promise<void> {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const stmt = `
-            INSERT INTO stations (id, name, lat, lon, elevation, first_year, last_year)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            ON CONFLICT (id) DO UPDATE SET
-              name = EXCLUDED.name,
-              lat = EXCLUDED.lat,
-              lon = EXCLUDED.lon,
-              elevation = EXCLUDED.elevation,
-              first_year = EXCLUDED.first_year,
-              last_year = EXCLUDED.last_year
-        `;
-    for (const station of stations) {
-      await client.query(stmt, [
-        station.id, station.name, station.lat, station.lon,
-        station.elevation, station.firstYear, station.lastYear
-      ]);
+    
+    // Process in batches of 1000 to avoid exceeding parameter limits
+    const BATCH_SIZE = 1000;
+    for (let i = 0; i < stations.length; i += BATCH_SIZE) {
+      const batch = stations.slice(i, i + BATCH_SIZE);
+      const params: any[] = [];
+      const placeholders: string[] = [];
+      let paramIndex = 1;
+      
+      for (const station of batch) {
+        placeholders.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
+        params.push(station.id, station.name, station.lat, station.lon, station.elevation, station.firstYear, station.lastYear);
+      }
+      
+      const stmt = `
+          INSERT INTO stations (id, name, lat, lon, elevation, first_year, last_year)
+          VALUES ${placeholders.join(', ')}
+          ON CONFLICT (id) DO UPDATE SET
+            name = EXCLUDED.name,
+            lat = EXCLUDED.lat,
+            lon = EXCLUDED.lon,
+            elevation = EXCLUDED.elevation,
+            first_year = EXCLUDED.first_year,
+            last_year = EXCLUDED.last_year
+      `;
+      
+      await client.query(stmt, params);
     }
     await client.query('COMMIT');
   } catch (err) {
@@ -185,15 +196,24 @@ export async function insertWeatherDataBatch(observations: DailyObservation[]): 
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const stmt = `
-            INSERT INTO weather_data (station_id, date, element, value, quality_flag)
-            VALUES ($1, $2, $3, $4, $5)
-        `;
+
+    // observations already comes from ghcnFetcher in batches of 5000, 
+    // which gives 25000 parameters (well under the 65535 limit)
+    const params: any[] = [];
+    const placeholders: string[] = [];
+    let paramIndex = 1;
+
     for (const obs of observations) {
-      await client.query(stmt, [
-        obs.stationId, obs.date, obs.element, obs.value, obs.qualityFlag
-      ]);
+      placeholders.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
+      params.push(obs.stationId, obs.date, obs.element, obs.value, obs.qualityFlag);
     }
+
+    const stmt = `
+        INSERT INTO weather_data (station_id, date, element, value, quality_flag)
+        VALUES ${placeholders.join(', ')}
+    `;
+
+    await client.query(stmt, params);
     await client.query('COMMIT');
   } catch (err) {
     await client.query('ROLLBACK');
@@ -239,17 +259,29 @@ export async function insertInventoryBatch(entries: InventoryEntry[]): Promise<v
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const stmt = `
-            INSERT INTO inventory (station_id, element, first_year, last_year)
-            VALUES ($1, $2, $3, $4)
-            ON CONFLICT (station_id, element) DO UPDATE SET
-              first_year = EXCLUDED.first_year,
-              last_year = EXCLUDED.last_year
-        `;
-    for (const entry of entries) {
-      await client.query(stmt, [
-        entry.stationId, entry.element, entry.firstYear, entry.lastYear
-      ]);
+    
+    // Process in batches of 10000 to keep parameter count below 65535 (10000 * 4 = 40000)
+    const BATCH_SIZE = 10000;
+    for (let i = 0; i < entries.length; i += BATCH_SIZE) {
+      const batch = entries.slice(i, i + BATCH_SIZE);
+      const params: any[] = [];
+      const placeholders: string[] = [];
+      let paramIndex = 1;
+      
+      for (const entry of batch) {
+        placeholders.push(`($${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++})`);
+        params.push(entry.stationId, entry.element, entry.firstYear, entry.lastYear);
+      }
+      
+      const stmt = `
+          INSERT INTO inventory (station_id, element, first_year, last_year)
+          VALUES ${placeholders.join(', ')}
+          ON CONFLICT (station_id, element) DO UPDATE SET
+            first_year = EXCLUDED.first_year,
+            last_year = EXCLUDED.last_year
+      `;
+      
+      await client.query(stmt, params);
     }
     await client.query('COMMIT');
   } catch (err) {
