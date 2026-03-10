@@ -28,7 +28,7 @@ jobs:
         run: npm install
 
       - name: Run Tests
-        run: bun test
+        run: npm test
 
   test-frontend:
     runs-on: ubuntu-latest

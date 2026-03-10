@@ -143,10 +143,10 @@ export class SidenavComponent implements OnChanges {
    */
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['latitude']) {
-      this.latitudeValue = this.latitude ?? '';
+      this.latitudeValue = (this.latitude ?? '').replace('.', ',');
     }
     if (changes['longitude']) {
-      this.longitudeValue = this.longitude ?? '';
+      this.longitudeValue = (this.longitude ?? '').replace('.', ',');
     }
 
     // Initial state anwenden (falls Komponente neu erstellt wird)

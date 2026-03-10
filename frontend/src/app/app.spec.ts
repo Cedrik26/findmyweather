@@ -167,8 +167,8 @@ describe('App', () => {
   it('private onMapClick should update coordinates, set marker and trigger detectChanges', () => {
     (component as any).onMapClick({ lat: 1.23456789, lng: 9.87654321 });
 
-    expect(component.latitude).toBe('1.234568');
-    expect(component.longitude).toBe('9.876543');
+    expect(component.latitude).toBe('1,234568');
+    expect(component.longitude).toBe('9,876543');
     expect(mapServiceSpy.setMarker).toHaveBeenCalledWith({ lat: 1.23456789, lng: 9.87654321 });
     expect(cdrSpy.detectChanges).toHaveBeenCalled();
   });
@@ -208,7 +208,7 @@ describe('App', () => {
     class ResizeObserverMock {
       observe = resizeObserve;
       disconnect = resizeDisconnect;
-      constructor(_cb: ResizeObserverCallback) {}
+      constructor(_cb: ResizeObserverCallback) { }
     }
     (globalThis as any).ResizeObserver = ResizeObserverMock as any;
 
@@ -225,8 +225,8 @@ describe('App', () => {
     expect(rafSpy).toHaveBeenCalled();
 
     clickHandler?.({ lat: 5, lng: 6 });
-    expect(component.latitude).toBe('5.000000');
-    expect(component.longitude).toBe('6.000000');
+    expect(component.latitude).toBe('5,000000');
+    expect(component.longitude).toBe('6,000000');
 
     graphHandler?.('ST-TEST');
     await new Promise((r) => setTimeout(r, 0));

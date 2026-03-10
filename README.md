@@ -5,11 +5,11 @@ Wetterdaten-Webanwendung basierend auf dem **GHCN (Global Historical Climatology
 ## Architektur
 
 ```
-┌────────────┐     ┌────────────┐     ┌──────────────┐
-│  Frontend  │────▶│  Backend   │────▶│  PostgreSQL   │
-│  (Nginx)   │     │ (Express)  │     │  (16-alpine)  │
-│  Port 80   │     │  Port 3000 │     │  Port 5432    │
-└────────────┘     └────────────┘     └──────────────┘
+┌────────────┐     ┌────────────┐      ┌──────────────┐
+│  Frontend  │───▶ │  Backend   │────▶│  PostgreSQL  │
+│  (Nginx)   │     │ (Express)  │      │  (16-alpine) │
+│  Port 80   │     │  Port 3000 │      │  Port 5432   │
+└────────────┘     └────────────┘      └──────────────┘
 ```
 
 | Komponente | Technologie |

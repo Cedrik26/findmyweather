@@ -124,8 +124,8 @@ describe('SidenavComponent', () => {
       longitude: { currentValue: '11.456', previousValue: '', firstChange: true, isFirstChange: () => true },
     } as any);
 
-    expect(component.latitudeValue).toBe('48.123');
-    expect(component.longitudeValue).toBe('11.456');
+    expect(component.latitudeValue).toBe('48,123');
+    expect(component.longitudeValue).toBe('11,456');
   });
 
   it('ngOnChanges should apply dark-mode class depending on darkMode flag', () => {
